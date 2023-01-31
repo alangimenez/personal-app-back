@@ -9,6 +9,10 @@ const diffInDaysBetweenDateAndToday = (date) => {
     return finishDate.diff(todayMoment, 'days')
 }
 
+const transformDate = (date) => {
+    return moment(date, 'YYYY-MM-DD').format('YYYY/MM/DD')
+}
+
 // redondea un numero flotante a dos decimales
 const roundToTwo = (num) => {
     return +(Math.round(num + "e+4") + "e-4");
@@ -16,5 +20,6 @@ const roundToTwo = (num) => {
 
 module.exports = {
     diffInDaysBetweenDateAndToday,
-    roundToTwo
+    roundToTwo, 
+    transformDate
 }

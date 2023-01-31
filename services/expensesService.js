@@ -1,5 +1,6 @@
 const expensesRepository = require('../repository/daos/expensesDao');
 const accountService = require('../services/accountService');
+const { transformDate } = require('../utils/utils')
 
 class ExpensesService {
     constructor() {}
@@ -26,7 +27,15 @@ class ExpensesService {
     }
 
     async getLastTenExpenses () {
-        const result = await expensesRepository.getLastTenExpenses();
+        const expenses = await expensesRepository.getLastTenExpenses();
+        const result = []
+        expenses.map((expense) => {
+            result.push({
+                ...expense._doc,
+                date: transformDate(expense.date)
+            }
+            )
+        })
         return result;
     }
 }

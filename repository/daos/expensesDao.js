@@ -19,7 +19,7 @@ class expenseDao extends CrudMongo {
 
     async getLastTenExpenses () {
         try {
-            const result = await this.model.find().sort({$natural:-1}).limit(3)
+            const result = await this.model.find().sort({$natural:-1}).limit(15)
             return result;
         } catch (e) {
             console.log(e.message)
