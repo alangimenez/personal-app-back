@@ -17,4 +17,9 @@ router.get('/', async (req, res) => {
     res.status(200).json(result);
 })
 
+router.post('/status', async (req, res) => {
+    const result = await expenseService.changeExpenseStatus(req.body.id)
+    res.status(200).json(result)
+})
+
 module.exports = router

@@ -14,6 +14,7 @@ class ExpensesService {
         }
 
         register.date = new Date(register.date)
+        register.load = false
 
         await expensesRepository.subirInfo(register)
         await accountService.updateBalance(register.debitAmount, register.debit, "add")
@@ -37,6 +38,11 @@ class ExpensesService {
             )
         })
         return result;
+    }
+
+    async changeExpenseStatus (id) {
+        const result = await expensesRepository.changeExpenseStatus(id)
+        return result
     }
 }
 

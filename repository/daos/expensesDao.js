@@ -26,6 +26,15 @@ class expenseDao extends CrudMongo {
         }
     }
 
+    async changeExpenseStatus (id) {
+        try {
+            const result = await this.model.updateOne({_id: id}, {$set: {load: true}})
+            return result
+        } catch (e) {
+            console.log(e.message)
+        }
+    }
+
 }
 
 let expenseSingleton = new expenseDao()

@@ -11,7 +11,8 @@ const expenseSchema = new Schema ({
     creditCurrency: {type: String},
     debitAmount: {type: Number},
     creditAmount: {type: Number},
-    comments: {type: String}
+    comments: {type: String},
+    load: {type: Boolean}
 })
 
 const Expense = mongoose.model(coleccion, expenseSchema);
