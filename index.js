@@ -1,7 +1,6 @@
-require('dotenv').config();
+const config = require('./config/config.environments');
 const express = require("express");
 const path = require('path');
-const PORT = process.env.PORT || 3001;
 const app = express();
 const cors = require('cors')
 const quotesRouter = require('./router/quotesRouter');
@@ -43,8 +42,8 @@ app.get('*', (req, res) => {
     res.sendFile(path.resolve(__dirname, '../client/build', 'index.html'));
 });
 
-app.listen(PORT, () => {
-    console.log(`Server listening on ${PORT}`);
+app.listen(config.PORT, () => {
+    console.log(`Server listening on ${config.PORT} with node_env ${config.NODE_ENV}`);
 });
 
 // export 'app'

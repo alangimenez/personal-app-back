@@ -1,11 +1,12 @@
 const mongoose = require('mongoose');
-const uri = process.env.MONGODB_URI;
+// const uri = process.env.MONGODB_URI;
+const config = require('../../config/config.environments');
 // const { ErrorHandler } = require('../../error/error');
 // const error = new ErrorHandler();
 
 (async () => {
     try {
-        await mongoose.connect(uri);
+        await mongoose.connect(config.MONGODB_URI);
         console.log('database connected')
     } catch (e) {
         console.log('database not connected. Error: ' + e)

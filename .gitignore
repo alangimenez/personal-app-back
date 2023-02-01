@@ -1,3 +1,5 @@
 /node_modules
 .env
 /.deta
+/config/dev.env
+/config/prod.env
