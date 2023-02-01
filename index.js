@@ -10,6 +10,7 @@ const cashflowRouter = require('./router/cashFlowRouter');
 const pruebaRouter = require('./router/pruebaRouter');
 const expensesRouter = require('./router/expensesRouter');
 const accountRouter = require('./router/accountRouter');
+const investmentRouter = require('./router/investmentRouter');
 const midSecurity = require('./middlewares/security');
 
 // habilitar cors
@@ -35,6 +36,7 @@ app.use('/tir', midSecurity.checkPassword, tirRouter)
 app.use('/cashflow', midSecurity.checkPassword, cashflowRouter)
 app.use('/expenses', expensesRouter)
 app.use('/account', accountRouter)
+app.use('/investment', investmentRouter)
 app.use('/prueba', midSecurity.checkPassword, pruebaRouter)
 
 // Todas las peticiones GET que no hayamos manejado en las líneas anteriores retornaran nuestro app React
