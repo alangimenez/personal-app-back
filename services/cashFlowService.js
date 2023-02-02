@@ -3,14 +3,14 @@ const cashFlowRepository = require('../repository/daos/cashflowDao')
 const { diffInDaysBetweenDateAndToday } = require('../utils/utils')
 
 class CashFlowService {
-    constructor() {}
-    async getCashFlow(bondName) {
-        return await cashFlowRepository.leerInfoPorBondname(bondName)
+    constructor() { }
+    async getCashFlow() {
+        return await cashFlowRepository.leerInfo()
     }
 
     async saveCashFlow(cashFlow) {
         return await cashFlowRepository.subirInfo({
-            "bondName": cashFlow.bondName,
+            "ticket": cashFlow.ticket,
             "company": cashFlow.company,
             "start": cashFlow.start,
             "finish": cashFlow.finish,
@@ -31,10 +31,10 @@ class CashFlowService {
             for (let i = 0; i < bond.dateInterest.length; i++) {
                 const [year, month, day] = bond.dateInterest[i].split('/')
                 flowOfInterest.push({
-                    "bondName": bond.bondName,
-                    "dateInterest": new Date(+year, +month -1, +day),
+                    "bondName": bond.ticket,
+                    "dateInterest": new Date(+year, +month - 1, +day),
                     "amountInterest": bond.amountInterest[i],
-                    "remainingsDays": diffInDaysBetweenDateAndToday(new Date(+year, +month -1, +day))
+                    "remainingsDays": diffInDaysBetweenDateAndToday(new Date(+year, +month - 1, +day))
                 })
             }
         })
@@ -43,7 +43,7 @@ class CashFlowService {
         flowOfInterest.map((interest) => {
             interest.dateInterest = interest.dateInterest.toLocaleDateString()
         })
-        
+
 
         return (flowOfInterest)
     }
