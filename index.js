@@ -11,7 +11,7 @@ const pruebaRouter = require('./router/pruebaRouter');
 const expensesRouter = require('./router/expensesRouter');
 const accountRouter = require('./router/accountRouter');
 const investmentRouter = require('./router/investmentRouter');
-const midSecurity = require('./middlewares/security');
+// const midSecurity = require('./middlewares/security');
 
 // habilitar cors
 app.use(cors())
@@ -30,14 +30,14 @@ app.post("/api", (req, res) => {
     res.json({ message: req.body });
 });
 
-app.use('/quotes', midSecurity.checkPassword , quotesRouter)
-app.use('/lastvalue', midSecurity.checkPassword,lastValueRouter)
-app.use('/tir', midSecurity.checkPassword, tirRouter)
-app.use('/cashflow', midSecurity.checkPassword, cashflowRouter)
+app.use('/quotes' , quotesRouter)
+app.use('/lastvalue',lastValueRouter)
+app.use('/tir', tirRouter)
+app.use('/cashflow', cashflowRouter)
 app.use('/expenses', expensesRouter)
 app.use('/account', accountRouter)
 app.use('/investment', investmentRouter)
-app.use('/prueba', midSecurity.checkPassword, pruebaRouter)
+app.use('/prueba', pruebaRouter)
 
 // Todas las peticiones GET que no hayamos manejado en las líneas anteriores retornaran nuestro app React
 app.get('*', (req, res) => {
