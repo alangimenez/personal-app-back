@@ -31,7 +31,9 @@ class InvestmentService {
             investmentsResponse.push({
                 ...e._doc,
                 operationQuantity: e.operationQuantity.toString(),
-                operationPrice: e.operationPrice.toString()
+                operationPrice: e.operationPrice.toString(),
+                actualQuantity: e.actualQuantity.toString(),
+                commission: e.commission.toString()
             })
         })
         return investmentsResponse

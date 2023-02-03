@@ -1,6 +1,5 @@
 const express = require('express');
 const router = express.Router();
-const { irr } = require('node-irr');
 const cashFlowService = require('../services/cashFlowService');
 
 router.get('/', async (req, res) => {
