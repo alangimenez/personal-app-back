@@ -1,6 +1,6 @@
-const Cashflow = require('../models/database/cashflowMg')
-const cashFlowRepository = require('../repository/daos/cashflowDao')
-const { diffInDaysBetweenDateAndToday } = require('../utils/utils')
+const cashFlowRepository = require('../repository/daos/cashflowDao');
+const { diffInDaysBetweenDateAndToday, transformDate, roundToTwo } = require('../utils/utils');
+const investmentService = require('./investmentService');
 
 class CashFlowService {
     constructor() { }
@@ -21,9 +21,6 @@ class CashFlowService {
     }
 
     async getAllCashFlowSorted() {
-
-        // TODO: consider actual quantity in portfolio
-
         const cashFlows = await cashFlowRepository.leerInfo()
         const flowOfInterest = []
 
@@ -31,7 +28,7 @@ class CashFlowService {
             for (let i = 0; i < bond.dateInterest.length; i++) {
                 const [year, month, day] = bond.dateInterest[i].split('/')
                 flowOfInterest.push({
-                    "bondName": bond.ticket,
+                    "ticket": bond.ticket,
                     "dateInterest": new Date(+year, +month - 1, +day),
                     "amountInterest": bond.amountInterest[i],
                     "remainingsDays": diffInDaysBetweenDateAndToday(new Date(+year, +month - 1, +day))
@@ -39,13 +36,21 @@ class CashFlowService {
             }
         })
 
+        const investments = await investmentService.getInvestments()
+        const response = []
+
+        // order by date, consider actualQuantity, delete old flows of money and delete flows that aren't in portfolio
         flowOfInterest.sort((a, b) => a.dateInterest - b.dateInterest)
         flowOfInterest.map((interest) => {
-            interest.dateInterest = interest.dateInterest.toLocaleDateString()
+            const index = investments.findIndex((asset) => asset.ticket == interest.ticket)
+            if (interest.remainingsDays >= 0 && index >= 0) {
+                interest.dateInterest = transformDate(interest.dateInterest)
+                interest.amountInterest = roundToTwo(interest.amountInterest * investments[index].actualQuantity)
+                response.push(interest)
+            }
         })
 
-
-        return (flowOfInterest)
+        return (response)
     }
 }
 
