@@ -22,6 +22,16 @@ class AccountService {
         return ({"message": "ok"})
     }
 
+    async getAllAccounts () {
+        return await accountRepository.leerInfo()
+    }
+
+    async getExpenseAccounts() {
+        const result =  await accountRepository.getExpenseAccounts()
+        result.sort((a, b) => a.name.localeCompare(b.name))
+        return result
+    }
+
 }
 
 const accountService = new AccountService()

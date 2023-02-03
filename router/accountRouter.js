@@ -7,4 +7,14 @@ router.post('/', async (req, res) => {
     res.status(200).json(result);
 })
 
+router.get('/', async (req, res) => {
+    const result = await accountService.getAllAccounts();
+    res.status(200).json(result);
+})
+
+router.get('/expenses', async (req, res) => {
+    const result = await accountService.getExpenseAccounts();
+    res.status(200).json(result)
+})
+
 module.exports = router

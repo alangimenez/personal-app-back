@@ -25,6 +25,14 @@ class accountDao extends CrudMongo {
             // return error.errorProcess("CRUD Error", `El Crud ha tenido un error -> ` + e.message);
         }
     }
+
+    async getExpenseAccounts() {
+        try {
+            return await this.model.find({type: 'R-'}, { __v: 0 })
+        } catch (e) {
+            console.log("can't read expenses accounts")
+        }
+    }
 }
 
 let accountSingleton = new accountDao()
