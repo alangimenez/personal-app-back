@@ -22,4 +22,9 @@ router.post('/status', async (req, res) => {
     res.status(200).json(result)
 })
 
+router.post('/batch', async (req, res) => {
+    const result = await expenseService.saveBatchExpenses(req.body)
+    res.status(200).json(result)
+})
+
 module.exports = router
