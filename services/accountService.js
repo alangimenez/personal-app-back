@@ -32,6 +32,13 @@ class AccountService {
         return result
     }
 
+    async getLiquidAccounts() {
+        const accountsWithDetail = await accountRepository.getLiquidAccounts()
+        const accounts = []
+        accountsWithDetail.map(it => accounts.push(it.name))
+        return accounts
+    }
+
 }
 
 const accountService = new AccountService()
