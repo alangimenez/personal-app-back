@@ -33,6 +33,14 @@ class accountDao extends CrudMongo {
             console.log("can't read expenses accounts")
         }
     }
+
+    async getLiquidAccounts() {
+        try {
+            return await this.model.find({assetType: 'Liquidez'}, { __v: 0 })
+        } catch (e) {
+            console.log("can't read liquid accounts")
+        }
+    }
 }
 
 let accountSingleton = new accountDao()

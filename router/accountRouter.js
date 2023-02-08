@@ -17,4 +17,9 @@ router.get('/expenses', async (req, res) => {
     res.status(200).json(result)
 })
 
+router.get('/liquid', async (req, res) => {
+    const result = await accountService.getLiquidAccounts();
+    res.status(200).json(result)
+})
+
 module.exports = router
