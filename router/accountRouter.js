@@ -22,4 +22,9 @@ router.get('/liquid', async (req, res) => {
     res.status(200).json(result)
 })
 
+router.get('/liquid-fci', async (req, res) => {
+    const result = await accountService.getLiquidAndFciAccounts();
+    res.status(200).json(result)
+})
+
 module.exports = router

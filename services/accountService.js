@@ -39,6 +39,11 @@ class AccountService {
         return accounts
     }
 
+    async getLiquidAndFciAccounts() {
+        const accounts = await accountRepository.getLiquidAndFciAccounts()
+        return accounts
+    }
+
 }
 
 const accountService = new AccountService()
