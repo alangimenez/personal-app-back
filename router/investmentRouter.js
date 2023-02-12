@@ -4,6 +4,7 @@ const investmentService = require('../services/investmentService');
 
 router.post('/', async (req, res) => {
     const result = await investmentService.saveInvestment(req.body);
+    console.log(result)
     res.status(201).json(result)
 })
 

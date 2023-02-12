@@ -11,6 +11,7 @@ class InvestmentService {
         } else {
             investment = response
         }
+
         switch (investment.operation) {
             case "Buy":
                 await this.operationBuy(investment)
@@ -21,6 +22,8 @@ class InvestmentService {
             default: 
                 break
         }
+
+        return ({"message": "ok"})
     }
 
     async getInvestments() {
