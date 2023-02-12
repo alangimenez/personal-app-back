@@ -4,7 +4,6 @@ const Schema = mongoose.Schema;
 const coleccion = 'investments';
 
 const investmentSchema = new Schema ({
-    name: {type: String},
     ticket: {type: String},
     operationDate: {type: String},
     operationQuantity: {type: mongoose.Types.Decimal128},
