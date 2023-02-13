@@ -17,4 +17,9 @@ router.post('/', async (req, res) => {
     res.json(result)
 })
 
+router.post('/manualquote', async (req, res) => {
+    const result = await lastValueService.saveManualQuote(req.body);
+    res.json(result)
+})
+
 module.exports = router

@@ -2,11 +2,11 @@ const investmentRepository = require('../repository/daos/investmentDao');
 const lastValueService = require('./lastValueService')
 
 class InvestmentService {
-    constructor () {}
+    constructor() { }
 
     async saveInvestment(response) {
         let investment;
-        if (typeof(response) == 'string') {
+        if (typeof (response) == 'string') {
             investment = JSON.parse(response)
         } else {
             investment = response
@@ -16,18 +16,18 @@ class InvestmentService {
             case "Buy":
                 await this.operationBuy(investment)
                 break;
-            case "Sell": 
+            case "Sell":
                 await this.operationSell(investment)
-                break; 
-            default: 
+                break;
+            default:
                 break
         }
 
-        return ({"message": "ok"})
+        return ({ "message": "ok" })
     }
 
     async getInvestments() {
-        const investments =  await investmentRepository.leerInfo()
+        const investments = await investmentRepository.leerInfo()
         const investmentsResponse = []
 
         investments.map((e) => {
@@ -67,9 +67,39 @@ class InvestmentService {
         })
 
         response.map(assetResponse => {
-            const key = lastValuePortfolio.findIndex(register => register.bondName == assetResponse.ticket)
-            assetResponse.actualPrice = lastValuePortfolio[key].closePrice
+            const key = lastValuePortfolio.findIndex(register => register.ticket == assetResponse.ticket)
+            assetResponse.actualPrice = lastValuePortfolio[key].price
         })
+
+        /*
+        const response = {
+            "total": {
+                "adr": 2000,
+                "fci": 1000,
+                "liquidez": 50
+            },
+            "detail": [
+                "value": "adr",
+                "detail": [
+                    {"name": "IRSA", "value": 1500},
+                    {"name": "YPF", "value": 500}
+                ],
+                "value": "fci",
+                "detail": [
+                    {"name": "FCI acciones", "value": 750},
+                    {"name": "FCI liquido", "value": 250}
+                ],
+                "value": "liquidez",
+                "detail": [
+                    {"name": "banco", "value": 40},
+                    {"name": "caja", "value": 10}
+                ]
+            ]
+        }
+        */
+
+        const test = {}
+        test[response[0]]
 
         return response
     }

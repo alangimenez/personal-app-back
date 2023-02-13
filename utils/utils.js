@@ -18,8 +18,19 @@ const roundToTwo = (num) => {
     return +(Math.round(num + "e+4") + "e-4");
 }
 
+const convertRequest = request => {
+    let response;
+        if (typeof(request) == 'string') {
+            response = JSON.parse(request)
+        } else {
+            response = request
+        }
+    return response
+}
+
 module.exports = {
     diffInDaysBetweenDateAndToday,
     roundToTwo, 
-    transformDate
+    transformDate,
+    convertRequest
 }

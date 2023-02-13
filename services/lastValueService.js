@@ -1,6 +1,7 @@
 const lastValueRepository = require('../repository/daos/lastValueDao.js');
 const tirRepository = require('../repository/daos/tirDao');
 const Quote = require('../models/quote');
+const { convertRequest } = require('../utils/utils')
 
 class LastValueService {
     constructor() {}
@@ -70,11 +71,9 @@ class LastValueService {
         let response = []
         for (let i = 0; i < lastValues.length; i++) {
             response.push({
-                bondName: lastValues[i].bondName,
+                ticket: lastValues[i].ticket,
                 date: lastValues[i].date,
-                time: lastValues[i].time,
-                lastPrice: +lastValues[i].lastPrice.toString(),
-                closePrice: +lastValues[i].closePrice.toString(),
+                price: +lastValues[i].price.toString(),
                 volume: +lastValues[i].volume.toString()
             })
         }
@@ -100,6 +99,23 @@ class LastValueService {
             }
         }
         return quotesResponse
+    }
+
+    async saveManualQuote(request) {
+        const quote = convertRequest(request)
+
+        const tiempoTranscurrido = Date.now();
+        const hoy = new Date(tiempoTranscurrido);
+        quote.date = hoy.toLocaleString()
+
+        const lastValueQuote = await lastValueRepository.getQuotesByTicket(quote.ticket)
+        if (lastValueQuote.length > 0) {
+            lastValueRepository.modifyValues(quote)
+        } else {
+            lastValueRepository.subirInfo(quote)
+        }
+
+        return ({"message": "ok"})
     }
 }
 

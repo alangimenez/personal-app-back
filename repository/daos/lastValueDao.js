@@ -26,6 +26,15 @@ class lastValueDao extends CrudMongo {
             console.log("Can't delete info in modifyValues")
         }
     }
+
+    async getQuotesByTicket(ticket) {
+        try {
+            const result = await this.model.find({ticket: ticket}, { __v: 0 })
+            return result
+        } catch (e) {
+            console.log("Can't read info by ticket")
+        }
+    }
 }
 
 let lastValueSingleton = new lastValueDao()
