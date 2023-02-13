@@ -6,13 +6,13 @@ const coleccion = 'investments';
 const investmentSchema = new Schema ({
     ticket: {type: String},
     operationDate: {type: String},
-    operationQuantity: {type: mongoose.Types.Decimal128},
-    operationPrice: {type: mongoose.Types.Decimal128},
+    operationQuantity: {type: Number},
+    operationPrice: {type: Number},
     operationCurrency: {type: String},
     assetType: {type: String},
     operation: {type: String},
-    actualQuantity: {type: mongoose.Types.Decimal128},
-    commission: {type: mongoose.Types.Decimal128},
+    actualQuantity: {type: Number},
+    commission: {type: Number},
     commissionCurrency: {type: String}
 })
 

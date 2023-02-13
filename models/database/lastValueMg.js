@@ -4,12 +4,10 @@ const Schema = mongoose.Schema;
 const coleccion = 'lastvalues';
 
 const lastValueSchema = new Schema ({
-    bondName: {type: String},
+    ticket: {type: String},
     date: {type: String},
-    time: {type: String},
-    lastPrice: {type: mongoose.Types.Decimal128},
-    closePrice: {type: mongoose.Types.Decimal128},
-    volume: {type: mongoose.Types.Decimal128}
+    price: {type: Number},
+    volume: {type: Number}
 })
 
 const LastValue = mongoose.model(coleccion, lastValueSchema);

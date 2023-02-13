@@ -1,10 +1,8 @@
 class Quote {
-    constructor(bondName, date, time, lastPrice, closePrice, volume) {
-        this.bondName = bondName;
+    constructor(ticket, date, price, volume) {
+        this.ticket = ticket;
         this.date = date;
-        this.time = time;
-        this.lastPrice = lastPrice;
-        this.closePrice = closePrice; 
+        this.price = price;
         this.volume = volume
       }
 }

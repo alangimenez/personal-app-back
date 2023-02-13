@@ -28,34 +28,27 @@ class LastValueService {
         const hoy = new Date(tiempoTranscurrido);
 
         for (let i = 0; i < arrayQuotes.length; i++) {
-            const indexBond = bonds.findIndex((e) => e.bondName == arrayQuotes[i].name)
+            const indexBond = bonds.findIndex((e) => e.ticket == arrayQuotes[i].ticket)
+            console.log(indexBond)
             if (indexBond >= 0) {
-                arrayQuotes[i].lastPrice = arrayQuotes[i].lastPrice.replace(".","")
-                arrayQuotes[i].lastPrice = arrayQuotes[i].lastPrice.replace(",",".")
-                arrayQuotes[i].closePrice = arrayQuotes[i].closePrice.replace(".","")
-                arrayQuotes[i].closePrice = arrayQuotes[i].closePrice.replace(",",".")
+                arrayQuotes[i].price = arrayQuotes[i].price.replace(".","")
+                arrayQuotes[i].price = arrayQuotes[i].price.replace(",",".")
                 arrayQuotes[i].volumen = arrayQuotes[i].volumen.replace(".","")
                 arrayQuotes[i].volumen = arrayQuotes[i].volumen.replace(",",".")
 
-                // TODO: edit data in mongodb without delete it (use $set)
-                if (arrayQuotes[i].lastPrice != bonds[indexBond].lastPrice || 
-                    arrayQuotes[i].closePrice != bonds[indexBond].closePrice || 
+                if (arrayQuotes[i].price != bonds[indexBond].price || 
                     arrayQuotes[i].volumen != bonds[indexBond].volumen) {
                         lastValueRepository.modifyValues(arrayQuotes[i])
                 }
             } else {
-                arrayQuotes[i].lastPrice = arrayQuotes[i].lastPrice.replace(".","")
-                arrayQuotes[i].lastPrice = arrayQuotes[i].lastPrice.replace(",",".")
-                arrayQuotes[i].closePrice = arrayQuotes[i].closePrice.replace(".","")
-                arrayQuotes[i].closePrice = arrayQuotes[i].closePrice.replace(",",".")
+                arrayQuotes[i].price = arrayQuotes[i].price.replace(".","")
+                arrayQuotes[i].price = arrayQuotes[i].price.replace(",",".")
                 arrayQuotes[i].volumen = arrayQuotes[i].volumen.replace(".","")
                 arrayQuotes[i].volumen = arrayQuotes[i].volumen.replace(",",".")
                 const quote = new Quote(
-                    arrayQuotes[i].name,
-                    hoy.toLocaleDateString(),
-                    hoy.toLocaleTimeString(),
-                    parseFloat(arrayQuotes[i].closePrice),
-                    parseFloat(arrayQuotes[i].lastPrice),
+                    arrayQuotes[i].ticket,
+                    hoy.toLocaleString(),
+                    parseFloat(arrayQuotes[i].price),
                     parseFloat(arrayQuotes[i].volumen)
                 )
     
