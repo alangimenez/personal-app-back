@@ -59,13 +59,6 @@ class InvestmentService {
             }
         })
 
-        // actualiza el precio para la valuacion del activo
-        /* portfolio.map(assetResponse => {
-            const key = lastValuePortfolio.findIndex(register => register.ticket == assetResponse.ticket)
-            assetResponse['actualPrice'] = lastValuePortfolio[key].price
-            console.log(assetResponse)
-        }) */
-
         const response = []
         for (let i = 0; i < portfolio.length; i++) {
             const key = lastValuePortfolio.findIndex(register => register.ticket == portfolio[i].ticket)
@@ -80,19 +73,33 @@ class InvestmentService {
 
         const subtotalByAssetType = []
         assetTypeDetail.map(atp => {
-            let value = 0
             const assetsMatching = response.filter(a => a.assetType == atp.assetType)
+            let valueAssetType = 0
             if (assetsMatching.length > 0) {
-                assetsMatching.map(am => value = value + (am.actualQuantity * am.actualPrice))
+                assetsMatching.map(am => {
+                    valueAssetType = valueAssetType + (am.actualQuantity * am.actualPrice)
+                })
             }
-            const typeOfAsset = {
-                "assetType": atp.assetType,
-                "subtotal": value
+            if (valueAssetType > 0) {
+                const typeOfAsset = {
+                    "assetType": atp.assetType,
+                    "subtotal": +valueAssetType
+                }
+                subtotalByAssetType.push(typeOfAsset)
             }
-            subtotalByAssetType.push(typeOfAsset)
+        })
+        let totalByAssetType = 0
+        subtotalByAssetType.map(sbat => {
+            totalByAssetType = totalByAssetType + sbat.subtotal
+        })
+        const subtotalByAssetTypeWithPercent = []
+        subtotalByAssetType.map(sbat => {
+            subtotalByAssetTypeWithPercent.push({
+                ...sbat,
+                "percentage": sbat.subtotal / totalByAssetType
+            })
         })
 
-        console.log(response)
         const detailByAssetType = []
         assetTypeDetail.map(atp => {
             let value = 0
@@ -104,54 +111,28 @@ class InvestmentService {
                         value = value + (asset.actualQuantity * asset.actualPrice)
                         const element = {
                             "ticket": asset.ticket,
-                            "subtotal": value
+                            "subtotal": value,
+                            "percentageOverTotal": value / totalByAssetType
                         }
                         subDetail.push(element)
+                        value = 0
                     })
-
                 }
             })
-            const newElement = {
-                "value": atp.assetType,
-                "subdetail": subDetail
+            if (subDetail.length > 0) {
+                const newElement = {
+                    "value": atp.assetType,
+                    "subdetail": subDetail
+                }
+                detailByAssetType.push(newElement)
             }
-            detailByAssetType.push(newElement)
         })
 
         const finalResponse = {
-            "total": subtotalByAssetType,
+            "totalDetail": subtotalByAssetTypeWithPercent,
+            "total": totalByAssetType,
             "detail": detailByAssetType
         }
-
-        // TODO: chequear porque el subtotal de la key total no coincide 
-        // con la sumatoria de subtotales de detail por assets
-
-        /*
-        const response = {
-            "total": {
-                "adr": 2000,
-                "fci": 1000,
-                "liquidez": 50
-            },
-            "detail": [
-                "value": "adr",
-                "detail": [
-                    {"name": "IRSA", "value": 1500},
-                    {"name": "YPF", "value": 500}
-                ],
-                "value": "fci",
-                "detail": [
-                    {"name": "FCI acciones", "value": 750},
-                    {"name": "FCI liquido", "value": 250}
-                ],
-                "value": "liquidez",
-                "detail": [
-                    {"name": "banco", "value": 40},
-                    {"name": "caja", "value": 10}
-                ]
-            ]
-        }
-        */
 
         return finalResponse
     }
