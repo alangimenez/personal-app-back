@@ -1,5 +1,6 @@
 const investmentRepository = require('../repository/daos/investmentDao');
-const lastValueService = require('./lastValueService')
+const lastValueService = require('./lastValueService');
+const assetTypeService = require('../services/assetTypeService');
 
 class InvestmentService {
     constructor() { }
@@ -45,6 +46,9 @@ class InvestmentService {
     async getPortfolio() {
         const operations = await investmentRepository.getRemainingOperations()
         const lastValuePortfolio = await lastValueService.getAll()
+        const assetTypeDetail = await assetTypeService.getAllAssetType()
+
+        // agrupa las operaciones en una sola tenencia
         const portfolio = []
         operations.map(operation => {
             const i = portfolio.findIndex(asset => asset.ticket == operation.ticket)
@@ -54,22 +58,73 @@ class InvestmentService {
                 portfolio.push(operation)
             }
         })
+
+        // actualiza el precio para la valuacion del activo
+        /* portfolio.map(assetResponse => {
+            const key = lastValuePortfolio.findIndex(register => register.ticket == assetResponse.ticket)
+            assetResponse['actualPrice'] = lastValuePortfolio[key].price
+            console.log(assetResponse)
+        }) */
+
         const response = []
-        portfolio.map(asset => {
-            let toPush = {
-                ...asset._doc,
-                operationQuantity: +asset.operationQuantity.toString(),
-                operationPrice: +asset.operationPrice.toString(),
-                actualQuantity: +asset.actualQuantity.toString(),
-                commission: +asset.commission.toString()
+        for (let i = 0; i < portfolio.length; i++) {
+            const key = lastValuePortfolio.findIndex(register => register.ticket == portfolio[i].ticket)
+            if (key >= 0) {
+                const newElement = {
+                    ...portfolio[i]._doc,
+                    'actualPrice': lastValuePortfolio[key].price
+                }
+                response.push(newElement)
             }
-            response.push(toPush)
+        }
+
+        const subtotalByAssetType = []
+        assetTypeDetail.map(atp => {
+            let value = 0
+            const assetsMatching = response.filter(a => a.assetType == atp.assetType)
+            if (assetsMatching.length > 0) {
+                assetsMatching.map(am => value = value + (am.actualQuantity * am.actualPrice))
+            }
+            const typeOfAsset = {
+                "assetType": atp.assetType,
+                "subtotal": value
+            }
+            subtotalByAssetType.push(typeOfAsset)
         })
 
-        response.map(assetResponse => {
-            const key = lastValuePortfolio.findIndex(register => register.ticket == assetResponse.ticket)
-            assetResponse.actualPrice = lastValuePortfolio[key].price
+        console.log(response)
+        const detailByAssetType = []
+        assetTypeDetail.map(atp => {
+            let value = 0
+            let subDetail = []
+            atp.assets.map(atpdetail => {
+                const assetMatch = response.filter(a => a.ticket == atpdetail)
+                if (assetMatch.length > 0) {
+                    assetMatch.map(asset => {
+                        value = value + (asset.actualQuantity * asset.actualPrice)
+                        const element = {
+                            "ticket": asset.ticket,
+                            "subtotal": value
+                        }
+                        subDetail.push(element)
+                    })
+
+                }
+            })
+            const newElement = {
+                "value": atp.assetType,
+                "subdetail": subDetail
+            }
+            detailByAssetType.push(newElement)
         })
+
+        const finalResponse = {
+            "total": subtotalByAssetType,
+            "detail": detailByAssetType
+        }
+
+        // TODO: chequear porque el subtotal de la key total no coincide 
+        // con la sumatoria de subtotales de detail por assets
 
         /*
         const response = {
@@ -98,10 +153,7 @@ class InvestmentService {
         }
         */
 
-        const test = {}
-        test[response[0]]
-
-        return response
+        return finalResponse
     }
 
     // PRIVATE
