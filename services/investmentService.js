@@ -111,6 +111,8 @@ class InvestmentService {
                         value = value + (asset.actualQuantity * asset.actualPrice)
                         const element = {
                             "ticket": asset.ticket,
+                            "quantity": asset.actualQuantity,
+                            "price": asset.actualPrice,
                             "subtotal": value,
                             "percentageOverTotal": value / totalByAssetType
                         }
