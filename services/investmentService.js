@@ -1,6 +1,7 @@
 const investmentRepository = require('../repository/daos/investmentDao');
 const lastValueService = require('./lastValueService');
 const assetTypeService = require('../services/assetTypeService');
+const otherQuotesService = require('../services/otherQuotesService');
 
 class InvestmentService {
     constructor() { }
@@ -47,6 +48,7 @@ class InvestmentService {
         const operations = await investmentRepository.getRemainingOperations()
         const lastValuePortfolio = await lastValueService.getAll()
         const assetTypeDetail = await assetTypeService.getAllAssetType()
+        const dollars = await otherQuotesService.getLastQuote()
 
         // agrupa las operaciones en una sola tenencia
         const portfolio = []
@@ -111,10 +113,21 @@ class InvestmentService {
                         value = value + (asset.actualQuantity * asset.actualPrice)
                         const element = {
                             "ticket": asset.ticket,
+                            "currency": asset.operationCurrency,
                             "quantity": asset.actualQuantity,
-                            "price": asset.actualPrice,
                             "subtotal": value,
                             "percentageOverTotal": value / totalByAssetType
+                        }
+                        if (asset.operationCurrency == "USD") {
+                            element['priceUsdBna'] = value
+                            element['priceUsdMep'] = value
+                            element['priceArsBna'] = value * dollars.quotes.dolarbnacomprador
+                            element['priceArsMep'] = value * dollars.quotes.dolarmep
+                        } else {
+                            element['priceUsdBna'] = value / dollars.quotes.dolarbnavendedor
+                            element['priceUsdMep'] = value / dollars.quotes.dolarmep
+                            element['priceArsBna'] = value
+                            element['priceArsMep'] = value
                         }
                         subDetail.push(element)
                         value = 0
@@ -128,6 +141,24 @@ class InvestmentService {
                 }
                 detailByAssetType.push(newElement)
             }
+        })
+
+        detailByAssetType.map(dbat => {
+            let subtotalUsdBna = 0
+            let subtotalArsBna = 0
+            let subtotalUsdMep = 0
+            let subtotalArsMep = 0
+            dbat.subdetail.map(dbatch => {
+                subtotalUsdBna = subtotalUsdBna + dbatch.priceUsdBna
+                subtotalArsBna = subtotalArsBna + dbatch.priceArsBna
+                subtotalUsdMep = subtotalUsdMep + dbatch.priceUsdMep
+                subtotalArsMep = subtotalArsMep + dbatch.priceArsMep
+            })
+            const k = subtotalByAssetTypeWithPercent.findIndex(at => at.assetType == dbat.value)
+            subtotalByAssetTypeWithPercent[k]['usdBna'] = subtotalUsdBna
+            subtotalByAssetTypeWithPercent[k]['arsBna'] = subtotalArsBna
+            subtotalByAssetTypeWithPercent[k]['usdMep'] = subtotalUsdMep
+            subtotalByAssetTypeWithPercent[k]['arsMep'] = subtotalArsMep
         })
 
         const finalResponse = {

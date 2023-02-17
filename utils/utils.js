@@ -28,9 +28,15 @@ const convertRequest = request => {
     return response
 }
 
+const addDays = date => {
+    const originalDate = moment(date).add(1, 'days').add(12, 'hours')
+    return originalDate.format('YYYY-MM-DD')
+}
+
 module.exports = {
     diffInDaysBetweenDateAndToday,
     roundToTwo, 
     transformDate,
-    convertRequest
+    convertRequest,
+    addDays
 }
