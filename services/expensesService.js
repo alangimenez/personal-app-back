@@ -61,10 +61,10 @@ class ExpensesService {
                 "date": batchExpenses.date,
                 "debit": expense.debtAccount,
                 "debitCurrency": batchExpenses.currency,
-                "debitAmount": expense.debtAmount,
+                "debitAmount": expense.debtAmount - expense.discountAmount,
                 "credit": batchExpenses.credit,
                 "creditCurrency": batchExpenses.currency,
-                "creditAmount": expense.debtAmount,
+                "creditAmount": expense.debtAmount - expense.discountAmount,
                 "comments": batchExpenses.comments
             }
             expensesRepository.subirInfo(eachExpense)
