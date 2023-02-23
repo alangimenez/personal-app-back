@@ -1,12 +1,14 @@
 const investmentRepository = require('../repository/daos/investmentDao');
-const lastValueService = require('./lastValueService')
+const lastValueService = require('./lastValueService');
+const assetTypeService = require('../services/assetTypeService');
+const otherQuotesService = require('../services/otherQuotesService');
 
 class InvestmentService {
-    constructor () {}
+    constructor() { }
 
     async saveInvestment(response) {
         let investment;
-        if (typeof(response) == 'string') {
+        if (typeof (response) == 'string') {
             investment = JSON.parse(response)
         } else {
             investment = response
@@ -16,18 +18,18 @@ class InvestmentService {
             case "Buy":
                 await this.operationBuy(investment)
                 break;
-            case "Sell": 
+            case "Sell":
                 await this.operationSell(investment)
-                break; 
-            default: 
+                break;
+            default:
                 break
         }
 
-        return ({"message": "ok"})
+        return ({ "message": "ok" })
     }
 
     async getInvestments() {
-        const investments =  await investmentRepository.leerInfo()
+        const investments = await investmentRepository.leerInfo()
         const investmentsResponse = []
 
         investments.map((e) => {
@@ -45,6 +47,10 @@ class InvestmentService {
     async getPortfolio() {
         const operations = await investmentRepository.getRemainingOperations()
         const lastValuePortfolio = await lastValueService.getAll()
+        const assetTypeDetail = await assetTypeService.getAllAssetType()
+        const dollars = await otherQuotesService.getLastQuote()
+
+        // agrupa las operaciones en una sola tenencia
         const portfolio = []
         operations.map(operation => {
             const i = portfolio.findIndex(asset => asset.ticket == operation.ticket)
@@ -54,24 +60,114 @@ class InvestmentService {
                 portfolio.push(operation)
             }
         })
+
         const response = []
-        portfolio.map(asset => {
-            let toPush = {
-                ...asset._doc,
-                operationQuantity: +asset.operationQuantity.toString(),
-                operationPrice: +asset.operationPrice.toString(),
-                actualQuantity: +asset.actualQuantity.toString(),
-                commission: +asset.commission.toString()
+        for (let i = 0; i < portfolio.length; i++) {
+            const key = lastValuePortfolio.findIndex(register => register.ticket == portfolio[i].ticket)
+            if (key >= 0) {
+                const newElement = {
+                    ...portfolio[i]._doc,
+                    'actualPrice': lastValuePortfolio[key].price
+                }
+                response.push(newElement)
             }
-            response.push(toPush)
+        }
+
+        const subtotalByAssetType = []
+        assetTypeDetail.map(atp => {
+            const assetsMatching = response.filter(a => a.assetType == atp.assetType)
+            let valueAssetType = 0
+            if (assetsMatching.length > 0) {
+                assetsMatching.map(am => {
+                    valueAssetType = valueAssetType + (am.actualQuantity * am.actualPrice)
+                })
+            }
+            if (valueAssetType > 0) {
+                const typeOfAsset = {
+                    "assetType": atp.assetType,
+                    "subtotal": +valueAssetType
+                }
+                subtotalByAssetType.push(typeOfAsset)
+            }
+        })
+        let totalByAssetType = 0
+        subtotalByAssetType.map(sbat => {
+            totalByAssetType = totalByAssetType + sbat.subtotal
+        })
+        const subtotalByAssetTypeWithPercent = []
+        subtotalByAssetType.map(sbat => {
+            subtotalByAssetTypeWithPercent.push({
+                ...sbat,
+                "percentage": sbat.subtotal / totalByAssetType
+            })
         })
 
-        response.map(assetResponse => {
-            const key = lastValuePortfolio.findIndex(register => register.bondName == assetResponse.ticket)
-            assetResponse.actualPrice = lastValuePortfolio[key].closePrice
+        const detailByAssetType = []
+        assetTypeDetail.map(atp => {
+            let value = 0
+            let subDetail = []
+            atp.assets.map(atpdetail => {
+                const assetMatch = response.filter(a => a.ticket == atpdetail)
+                if (assetMatch.length > 0) {
+                    assetMatch.map(asset => {
+                        value = value + (asset.actualQuantity * asset.actualPrice)
+                        const element = {
+                            "ticket": asset.ticket,
+                            "currency": asset.operationCurrency,
+                            "quantity": asset.actualQuantity,
+                            "subtotal": value,
+                            "percentageOverTotal": value / totalByAssetType
+                        }
+                        if (asset.operationCurrency == "USD") {
+                            element['priceUsdBna'] = value
+                            element['priceUsdMep'] = value
+                            element['priceArsBna'] = value * dollars.quotes.dolarbnacomprador
+                            element['priceArsMep'] = value * dollars.quotes.dolarmep
+                        } else {
+                            element['priceUsdBna'] = value / dollars.quotes.dolarbnavendedor
+                            element['priceUsdMep'] = value / dollars.quotes.dolarmep
+                            element['priceArsBna'] = value
+                            element['priceArsMep'] = value
+                        }
+                        subDetail.push(element)
+                        value = 0
+                    })
+                }
+            })
+            if (subDetail.length > 0) {
+                const newElement = {
+                    "value": atp.assetType,
+                    "subdetail": subDetail
+                }
+                detailByAssetType.push(newElement)
+            }
         })
 
-        return response
+        detailByAssetType.map(dbat => {
+            let subtotalUsdBna = 0
+            let subtotalArsBna = 0
+            let subtotalUsdMep = 0
+            let subtotalArsMep = 0
+            dbat.subdetail.map(dbatch => {
+                subtotalUsdBna = subtotalUsdBna + dbatch.priceUsdBna
+                subtotalArsBna = subtotalArsBna + dbatch.priceArsBna
+                subtotalUsdMep = subtotalUsdMep + dbatch.priceUsdMep
+                subtotalArsMep = subtotalArsMep + dbatch.priceArsMep
+            })
+            const k = subtotalByAssetTypeWithPercent.findIndex(at => at.assetType == dbat.value)
+            subtotalByAssetTypeWithPercent[k]['usdBna'] = subtotalUsdBna
+            subtotalByAssetTypeWithPercent[k]['arsBna'] = subtotalArsBna
+            subtotalByAssetTypeWithPercent[k]['usdMep'] = subtotalUsdMep
+            subtotalByAssetTypeWithPercent[k]['arsMep'] = subtotalArsMep
+        })
+
+        const finalResponse = {
+            "totalDetail": subtotalByAssetTypeWithPercent,
+            "total": totalByAssetType,
+            "detail": detailByAssetType
+        }
+
+        return finalResponse
     }
 
     // PRIVATE
