@@ -3,7 +3,7 @@ const router = express.Router();
 const expenseCreditCardService = require('../services/expenseCreditCardService');
 
 router.post('/', async (req, res) => {
-    const result = await expenseCreditCardService
+    const result = await expenseCreditCardService.saveExpenseInCreditCard(req.body)
     res.status(200).json(result)
 })
 
@@ -12,6 +12,19 @@ router.post('/period', async (req, res) => {
     res.status(201).json(result)
 })
 
-module.exports = router
+router.post('/period/close', async (req, res) => {
+    const result = await expenseCreditCardService.closeCreditCardPeriod()
+    res.status(200).json(result)
+})
 
-// create endpoint for new period. After that, create endpoint for expenses
+router.get('/period', async (req, res) => {
+    const result = await expenseCreditCardService.getOpenPeriodByCreditCard()
+    res.status(200).json(result)
+})
+
+router.post('/period/status', async (req, res) => {
+    const result = await expenseCreditCardService.changeStatusOfPeriod(req.body)
+    res.status(200).json(result)
+})
+
+module.exports = router
