@@ -8,7 +8,7 @@ router.get('/', async (req, res) => {
 })
 
 router.post('/', async (req, res) => {
-    const result = await creditCardService.createAssetType(req.body)
+    const result = await creditCardService.createNewCreditCard(req.body)
     res.status(201).json(result)
 })
 

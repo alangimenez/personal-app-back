@@ -1,5 +1,5 @@
 const { CrudMongo } = require('../crud/crud');
-const creditCardModel = require('../../models/database/assetTypeMg');
+const creditCardModel = require('../../models/database/creditCardMg');
 // const { ErrorHandler } = require('../../../error/error');
 // const error = new ErrorHandler();
 
