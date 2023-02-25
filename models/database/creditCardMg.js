@@ -6,9 +6,6 @@ const coleccion = 'creditcard';
 const creditCardSchema = new Schema ({
     name: {type: String},
     debtAccount: {type: String}
-    /* period: {type: String},
-    closeDate: {type: Date},
-    paymentDate: {type: Date} */
 })
 
 const CreditCard = mongoose.model(coleccion, creditCardSchema);

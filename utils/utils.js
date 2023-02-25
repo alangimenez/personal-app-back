@@ -33,10 +33,16 @@ const addDays = date => {
     return originalDate.format('YYYY-MM-DD')
 }
 
+const addSpecificDays = (date, days) => {
+    const originalDate = moment(date).add(days, 'days').add(12, 'hours')
+    return originalDate.format('YYYY-MM-DD')
+}
+
 module.exports = {
     diffInDaysBetweenDateAndToday,
     roundToTwo, 
     transformDate,
     convertRequest,
-    addDays
+    addDays,
+    addSpecificDays
 }

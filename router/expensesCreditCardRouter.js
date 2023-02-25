@@ -1,14 +1,14 @@
 const express = require('express');
 const router = express.Router();
-const creditCardService = require('../services/creditCardService');
+const expenseCreditCardService = require('../services/expenseCreditCardService');
 
-router.get('/', async (req, res) => {
-    const result = await creditCardService.getAllCreditCards()
+router.post('/', async (req, res) => {
+    const result = await expenseCreditCardService
     res.status(200).json(result)
 })
 
-router.post('/', async (req, res) => {
-    const result = await creditCardService.createAssetType(req.body)
+router.post('/period', async (req, res) => {
+    const result = await expenseCreditCardService.createNewPeriod(req.body)
     res.status(201).json(result)
 })
 
