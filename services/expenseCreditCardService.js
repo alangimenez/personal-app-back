@@ -1,5 +1,5 @@
 const expenseCreditCardRepository = require('../repository/daos/expenseCreditCardDao')
-const { convertRequest, addSpecificDays } = require('../utils/utils')
+const { convertRequest, addSpecificDays, transformDate } = require('../utils/utils')
 const expensesService = require('./expensesService')
 
 class ExpenseCreditCardService {
@@ -55,8 +55,6 @@ class ExpenseCreditCardService {
     async saveExpenseInCreditCard(request) {
         const batchExpenses = convertRequest(request)
 
-        console.log(batchExpenses)
-
         let period = this.month.findIndex(it => it == batchExpenses.period)
         period = period + 1
 
@@ -73,10 +71,10 @@ class ExpenseCreditCardService {
         return ({ "message": "ok" })
     }
 
-    async getOpenPeriodByCreditCard() {
+    async getOpenPeriodByCreditCard(status) {
         /* const creditCard = convertRequest(request) */
 
-        const openPeriod = await expenseCreditCardRepository.getOpenPeriodByCreditCard()
+        const openPeriod = await expenseCreditCardRepository.getOpenPeriodByCreditCard(status)
 
         const creditCardNames = []
 
@@ -116,12 +114,10 @@ class ExpenseCreditCardService {
         if (creditCardData.status == "PAID") {
             const creditCardPeriod = await expenseCreditCardRepository.getPeriodByCreditCard(creditCardData.name, creditCardData.period)
 
-            console.log(creditCardPeriod)
-
             const arrayOfExpenses = []
             creditCardPeriod.expenses.map(e => {
                 const eachExpense = {
-                    "debtAccount": e.account, 
+                    "debtAccount": e.account,
                     "debtAmount": e.amount,
                     "discountAmount": 0
                 }
@@ -140,6 +136,71 @@ class ExpenseCreditCardService {
         }
 
         return result
+    }
+
+    async getExpensesByCreditCardAndPeriod(status) {
+        let expenses = await expenseCreditCardRepository.getExpensesOfOpenPeriods(status)
+
+        const response = []
+        expenses.map(e => {
+
+            const arrayOfEachExpense = []
+            e.expenses.map(eachExpense => {
+                const newExpense = {
+                    ...eachExpense,
+                    date: transformDate(eachExpense.date)
+                }
+                arrayOfEachExpense.push(newExpense)
+            })
+
+            const expense = {
+                ...e._doc,
+                "period": this.convertNumberPeriodToStringPeriod(e.period),
+                expenses: arrayOfEachExpense
+            }
+            response.push(expense)
+        })
+
+        return response
+    }
+
+    async getExpensesByCreditCard() {
+        const expenses = await expenseCreditCardRepository.leerInfo()
+
+        const response = []
+        expenses.map(e => {
+
+            const arrayOfEachExpense = []
+            e.expenses.map(eachExpense => {
+                const newExpense = {
+                    ...eachExpense,
+                    date: transformDate(eachExpense.date)
+                }
+                arrayOfEachExpense.push(newExpense)
+            })
+
+            const expense = {
+                ...e._doc,
+                "period": this.convertNumberPeriodToStringPeriod(e.period),
+                "closeDate": transformDate(e.closeDate),
+                "paymentDate": transformDate(e.paymentDate),
+                expenses: arrayOfEachExpense
+            }
+            response.push(expense)
+        })
+
+        return response
+    }
+
+    // PRIVATE
+
+    convertStringPeriodToNumberPeriod(string) {
+        let period = this.month.findIndex(it => it == string)
+        return period + 1
+    }
+
+    convertNumberPeriodToStringPeriod(number) {
+        return this.month[number - 1]
     }
 }
 

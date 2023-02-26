@@ -27,9 +27,9 @@ class expenseCreditCardDao extends CrudMongo {
         }
     }
 
-    async getOpenPeriodByCreditCard() {
+    async getOpenPeriodByCreditCard(status) {
         try {
-            const result = await this.model.find({ status: "OPEN" }, { __v: 0 })
+            const result = await this.model.find({ status: status }, { __v: 0 })
             return result
         } catch (e) {
             console.log(e)
@@ -58,6 +58,15 @@ class expenseCreditCardDao extends CrudMongo {
         try {
             const result = await this.model.find({ name: name, period: period }, { __v: 0 })
             return result[0]
+        } catch (e) {
+            console.log(e)
+        }
+    }
+
+    async getExpensesOfOpenPeriods(status) {
+        try {
+            const result = await this.model.find({ status: status }, { __v: 0 })
+            return result
         } catch (e) {
             console.log(e)
         }
