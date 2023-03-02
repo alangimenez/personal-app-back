@@ -2,6 +2,7 @@ const investmentRepository = require('../repository/daos/investmentDao');
 const lastValueService = require('./lastValueService');
 const assetTypeService = require('../services/assetTypeService');
 const otherQuotesService = require('../services/otherQuotesService');
+const { convertRequest } = require('../utils/utils');
 
 class InvestmentService {
     constructor() { }

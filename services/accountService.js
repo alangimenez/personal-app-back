@@ -1,15 +1,11 @@
 const accountRepository = require('../repository/daos/accountDao');
+const { convertRequest } = require('../utils/utils');
 
 class AccountService {
     constructor() {}
 
     async newAccount (request) {
-        let account;
-        if (typeof(request) == 'string') {
-            account = JSON.parse(request)
-        } else {
-            account = request
-        }
+        let account = convertRequest(request)
 
         const result = await accountRepository.subirInfo(account)
         return ({"message": "ok"})
