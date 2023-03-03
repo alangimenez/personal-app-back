@@ -7,7 +7,7 @@ const quotesRouter = require('./router/quotesRouter');
 const lastValueRouter = require('./router/lastValueRouter');
 const tirRouter = require('./router/tirRouter');
 const cashflowRouter = require('./router/cashFlowRouter');
-const expensesRouter = require('./router/expensesRouter');
+const registersRouter = require('./router/registerRouter');
 const accountRouter = require('./router/accountRouter');
 const investmentRouter = require('./router/investmentRouter');
 const assetTypeRouter = require('./router/assetTypeRouter');
@@ -37,7 +37,7 @@ app.use('/quotes' , quotesRouter)
 app.use('/lastvalue',lastValueRouter)
 app.use('/tir', tirRouter)
 app.use('/cashflow', cashflowRouter)
-app.use('/expenses', expensesRouter)
+app.use('/registers', registersRouter)
 app.use('/account', accountRouter)
 app.use('/investment', investmentRouter)
 app.use('/assettype', assetTypeRouter)

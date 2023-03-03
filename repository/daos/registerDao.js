@@ -1,14 +1,14 @@
 const { CrudMongo } = require('../crud/crud');
-const expenseModel = require('../../models/database/expenseMg');
+const registerModel = require('../../models/database/registerMg');
 // const { ErrorHandler } = require('../../../error/error');
 // const error = new ErrorHandler();
 
-class expenseDao extends CrudMongo {
+class registerDao extends CrudMongo {
     constructor() {
-        super(expenseModel)
+        super(registerModel)
     }
 
-    async getExpensesFilterByDate (date) {
+    async getRegistersFilterByDate (date) {
         try {
             const result = await this.model.find({date: { $gt: new Date(date)}}, { __v: 0 })
             return result;
@@ -17,7 +17,7 @@ class expenseDao extends CrudMongo {
         }
     }
 
-    async getLastTenExpenses () {
+    async getLastTenRegisters () {
         try {
             const result = await this.model.find().sort({$natural:-1})
             return result;
@@ -26,7 +26,7 @@ class expenseDao extends CrudMongo {
         }
     }
 
-    async changeExpenseStatus (id) {
+    async changeRegisterStatus (id) {
         try {
             const result = await this.model.updateOne({_id: id}, {$set: {load: true}})
             return result
@@ -37,6 +37,6 @@ class expenseDao extends CrudMongo {
 
 }
 
-let expenseSingleton = new expenseDao()
+let registerSingleton = new registerDao()
 
-module.exports = expenseSingleton
+module.exports = registerSingleton

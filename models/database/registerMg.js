@@ -1,9 +1,9 @@
 const mongoose = require('mongoose');
 
 const Schema = mongoose.Schema;
-const coleccion = 'expenses';
+const coleccion = 'registers';
 
-const expenseSchema = new Schema ({
+const registerSchema = new Schema ({
     date: {type: Date},
     debit: {type: String},
     debitCurrency: {type: String},
@@ -15,6 +15,6 @@ const expenseSchema = new Schema ({
     load: {type: Boolean}
 })
 
-const Expense = mongoose.model(coleccion, expenseSchema);
+const Register = mongoose.model(coleccion, registerSchema);
 
-module.exports = Expense;
+module.exports = Register;

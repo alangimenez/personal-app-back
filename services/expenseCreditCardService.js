@@ -1,6 +1,6 @@
 const expenseCreditCardRepository = require('../repository/daos/expenseCreditCardDao')
 const { convertRequest, addSpecificDays, transformDate } = require('../utils/utils')
-const expensesService = require('./expensesService')
+const expensesService = require('./registerService')
 
 class ExpenseCreditCardService {
     constructor() {
