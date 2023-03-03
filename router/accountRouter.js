@@ -27,4 +27,9 @@ router.get('/liquid-fci', async (req, res) => {
     res.status(200).json(result)
 })
 
+router.get('/type/:type', async (req, res) => {
+    const result = await accountService.getAccountsByType(req.params.type)
+    res.status(200).json(result)
+})
+
 module.exports = router

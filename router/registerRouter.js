@@ -24,7 +24,12 @@ router.post('/status', async (req, res) => {
 
 router.post('/batch', async (req, res) => {
     const result = await registerService.saveBatchRegisters(req.body)
-    res.status(200).json(result)
+    res.status(201).json(result)
+})
+
+router.post('/earning', async (req, res) => {
+    const result = await registerService.saveEarning(req.body)
+    res.status(201).json(result)
 })
 
 module.exports = router

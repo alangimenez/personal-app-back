@@ -40,6 +40,12 @@ class AccountService {
         return accounts
     }
 
+    async getAccountsByType(type) {
+        const accountsByType = await accountRepository.getAccountsByType(type)
+        const arrayOfAccountName = []
+        accountsByType.map(it => arrayOfAccountName.push(it.name))
+        return arrayOfAccountName
+    }
 }
 
 const accountService = new AccountService()

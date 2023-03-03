@@ -64,6 +64,16 @@ class RegistersService {
 
         return ({ "message": "ok" })
     }
+
+    async saveEarning(request) {
+        const earning = convertRequest(request)
+
+        const result = await registerRepository.subirInfo(earning)
+
+        await accountService.updateBalance(+earning.debitAmount, earning.debit, "add")
+        await accountService.updateBalance(+earning.creditAmount, earning.credit, "add")
+        return result
+    }
 }
 
 const registersService = new RegistersService()
