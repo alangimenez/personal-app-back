@@ -43,18 +43,22 @@ class RegistersService {
     async saveBatchRegisters(request) {
         let batchRegisters = convertRequest(request)
 
+        let benefitMP = 1
+        if (batchRegisters.benefitMP) {benefitMP = 0.3}
+
         let amount = 0
         batchRegisters.expenses.map((register) => {
             const eachRegister = {
                 "date": batchRegisters.date,
                 "debit": register.debtAccount,
                 "debitCurrency": batchRegisters.currency,
-                "debitAmount": register.debtAmount - register.discountAmount,
+                "debitAmount": (+register.debtAmount - +register.discountAmount) * benefitMP,
                 "credit": batchRegisters.credit,
                 "creditCurrency": batchRegisters.currency,
-                "creditAmount": register.debtAmount - register.discountAmount,
+                "creditAmount": (+register.debtAmount - +register.discountAmount) * benefitMP,
                 "comments": batchRegisters.comments
             }
+            console.log(eachRegister)
             registerRepository.subirInfo(eachRegister)
             accountService.updateBalance(register.debtAmount - register.discountAmount, register.debtAccount, "add")
             amount = +amount + +eachRegister.debitAmount

@@ -55,6 +55,9 @@ class ExpenseCreditCardService {
     async saveExpenseInCreditCard(request) {
         const batchExpenses = convertRequest(request)
 
+        let benefitMP = 1
+        if (batchExpenses.benefitMP) {benefitMP = 0.3}
+
         let period = this.month.findIndex(it => it == batchExpenses.period)
         period = period + 1
 
@@ -62,7 +65,7 @@ class ExpenseCreditCardService {
             const eachExpense = {
                 "date": new Date(batchExpenses.date),
                 "account": expense.account,
-                "amount": expense.debtAmount - expense.discountAmount,
+                "amount": (expense.debtAmount - expense.discountAmount) * benefitMP,
                 "comments": batchExpenses.comments
             }
             expenseCreditCardRepository.addExpenseToCreditCardByPeriod(eachExpense, batchExpenses.name, period)
