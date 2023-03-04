@@ -1,7 +1,6 @@
 const registerRepository = require('../repository/daos/registerDao');
 const accountService = require('./accountService');
 const { transformDate, convertRequest } = require('../utils/utils')
-const mercadoPagoService = require('./mercadoPagoService')
 
 class RegistersService {
     constructor() { }
