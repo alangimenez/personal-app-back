@@ -1,6 +1,7 @@
 const registerRepository = require('../repository/daos/registerDao');
 const accountService = require('./accountService');
 const { transformDate, convertRequest } = require('../utils/utils')
+const mercadoPagoService = require('./mercadoPagoService')
 
 class RegistersService {
     constructor() { }
@@ -58,7 +59,6 @@ class RegistersService {
                 "creditAmount": (+register.debtAmount - +register.discountAmount) * benefitMP,
                 "comments": batchRegisters.comments
             }
-            console.log(eachRegister)
             registerRepository.subirInfo(eachRegister)
             accountService.updateBalance(register.debtAmount - register.discountAmount, register.debtAccount, "add")
             amount = +amount + +eachRegister.debitAmount
