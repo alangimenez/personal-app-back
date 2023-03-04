@@ -64,7 +64,7 @@ class ExpenseCreditCardService {
         batchExpenses.expenses.map(expense => {
             const eachExpense = {
                 "date": new Date(batchExpenses.date),
-                "account": expense.account,
+                "account": expense.debtAccount,
                 "amount": (expense.debtAmount - expense.discountAmount) * benefitMP,
                 "comments": batchExpenses.comments
             }
@@ -75,8 +75,6 @@ class ExpenseCreditCardService {
     }
 
     async getOpenPeriodByCreditCard(status) {
-        /* const creditCard = convertRequest(request) */
-
         const openPeriod = await expenseCreditCardRepository.getOpenPeriodByCreditCard(status)
 
         const creditCardNames = []
@@ -101,6 +99,11 @@ class ExpenseCreditCardService {
                     ccwp.openPeriods.push(this.month[op.period - 1])
                 }
             })
+        })
+
+        creditCardWithPeriods.map(ccwp => {
+            const key = openPeriod.findIndex(op => op.name == ccwp.name)
+            ccwp['credit'] = openPeriod[key].debtAccount
         })
 
         return creditCardWithPeriods
