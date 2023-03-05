@@ -16,6 +16,7 @@ const creditCardRouter = require('./router/creditCardRouter');
 const expenseCreditCardRouter = require('./router/expensesCreditCardRouter');
 const mercadoPagoRouter = require('./router/mercadoPagoRouter')
 const periodRouter = require('./router/periodRouter')
+const refundRouter = require('./router/refundRouter')
 // const midSecurity = require('./middlewares/security');
 
 // habilitar cors
@@ -48,6 +49,7 @@ app.use('/creditcard', creditCardRouter)
 app.use('/expensecreditcard', expenseCreditCardRouter)
 app.use('/mercadopago', mercadoPagoRouter)
 app.use('/period', periodRouter)
+app.use('/refund', refundRouter)
 
 // Todas las peticiones GET que no hayamos manejado en las líneas anteriores retornaran nuestro app React
 app.get('*', (req, res) => {
