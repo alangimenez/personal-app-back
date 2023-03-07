@@ -1,5 +1,6 @@
 const refundRepository = require('../repository/daos/refundDao')
 const { convertRequest } = require('../utils/utils')
+const registerService = require('./registerService')
 
 class RefundService {
     constructor() { }
@@ -38,8 +39,30 @@ class RefundService {
 
     async uploadRefund(request) {
         const refund = convertRequest(request)
+        const id = refund.id
+        delete refund.id
 
+        await refundRepository.uploadRefundOfAnExpense(refund, id)
 
+        const expenseOfRefund = await refundRepository.leerInfoPorId(id)
+        const expenseToRegister = {
+            "date": refund.date,
+            "credit": expenseOfRefund[0].expenses[0].debit,
+            "comments": expenseOfRefund[0].comments,
+            "benefitMP": false,
+            "currency": "ARS",
+            "expenses": [
+                {
+                    "debtAccount": refund.account,
+                    "discountAmount": 0,
+                    "debtAmount": refund.amount
+                }
+            ]
+        }
+        
+        const result = await registerService.saveBatchRegisters(expenseToRegister)
+
+        return result
     }
 
     async getAllRefunds() {
