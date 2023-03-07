@@ -55,14 +55,17 @@ class ExpenseCreditCardService {
     async saveExpenseInCreditCard(request) {
         const batchExpenses = convertRequest(request)
 
+        let benefitMP = 1
+        if (batchExpenses.benefitMP) {benefitMP = 0.3}
+
         let period = this.month.findIndex(it => it == batchExpenses.period)
         period = period + 1
 
         batchExpenses.expenses.map(expense => {
             const eachExpense = {
                 "date": new Date(batchExpenses.date),
-                "account": expense.account,
-                "amount": expense.debtAmount - expense.discountAmount,
+                "account": expense.debtAccount,
+                "amount": (expense.debtAmount - expense.discountAmount) * benefitMP,
                 "comments": batchExpenses.comments
             }
             expenseCreditCardRepository.addExpenseToCreditCardByPeriod(eachExpense, batchExpenses.name, period)
@@ -72,8 +75,6 @@ class ExpenseCreditCardService {
     }
 
     async getOpenPeriodByCreditCard(status) {
-        /* const creditCard = convertRequest(request) */
-
         const openPeriod = await expenseCreditCardRepository.getOpenPeriodByCreditCard(status)
 
         const creditCardNames = []
@@ -98,6 +99,11 @@ class ExpenseCreditCardService {
                     ccwp.openPeriods.push(this.month[op.period - 1])
                 }
             })
+        })
+
+        creditCardWithPeriods.map(ccwp => {
+            const key = openPeriod.findIndex(op => op.name == ccwp.name)
+            ccwp['credit'] = openPeriod[key].debtAccount
         })
 
         return creditCardWithPeriods
