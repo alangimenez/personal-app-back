@@ -50,12 +50,12 @@ class ExpenseCreditCardService {
         return ({ "message": "ok" })
     }
 
-    async getOpenPeriodByCreditCard(status) {
-        const openPeriod = await expenseCreditCardRepository.getOpenPeriodByCreditCard(status)
+    async getPeriodByStatus(status) {
+        const period = await expenseCreditCardRepository.getPeriodByStatus(status)
 
         const creditCardNames = []
 
-        openPeriod.map(it => {
+        period.map(it => {
             if (!creditCardNames.includes(it.name)) {
                 creditCardNames.push(it.name)
             }
@@ -69,17 +69,23 @@ class ExpenseCreditCardService {
             })
         })
 
-        openPeriod.map(op => {
+        period.map(op => {
             creditCardWithPeriods.map(ccwp => {
-                if (op.name == ccwp.name) {
-                    ccwp.openPeriods.push(this.month[op.period - 1])
+                if (op.name == ccwp.name && ccwp.openPeriods.findIndex(a => a.year == op.year) < 0) {
+                    ccwp.openPeriods.push({
+                        "year": op.year,
+                        "month": [op.month]
+                    })
+                } else if (op.name == ccwp.name) {
+                    const key = ccwp.openPeriods.findIndex(opccwp => opccwp.year == op.year)
+                    ccwp.openPeriods[key].month.push(op.month)
                 }
             })
         })
 
         creditCardWithPeriods.map(ccwp => {
-            const key = openPeriod.findIndex(op => op.name == ccwp.name)
-            ccwp['credit'] = openPeriod[key].debtAccount
+            const key = period.findIndex(op => op.name == ccwp.name)
+            ccwp['credit'] = period[key].debtAccount
         })
 
         return creditCardWithPeriods

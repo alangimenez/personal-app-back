@@ -18,7 +18,7 @@ router.post('/period/close', async (req, res) => {
 })
 
 router.get('/period/:status', async (req, res) => {
-    const result = await expenseCreditCardService.getOpenPeriodByCreditCard(req.params.status)
+    const result = await expenseCreditCardService.getPeriodByStatus(req.params.status)
     res.status(200).json(result)
 })
 

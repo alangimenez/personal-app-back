@@ -27,7 +27,7 @@ class expenseCreditCardDao extends CrudMongo {
         }
     }
 
-    async getOpenPeriodByCreditCard(status) {
+    async getPeriodByStatus(status) {
         try {
             const result = await this.model.find({ status: status }, { __v: 0 })
             return result
