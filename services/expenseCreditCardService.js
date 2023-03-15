@@ -10,35 +10,11 @@ class ExpenseCreditCardService {
     async createNewPeriod(request) {
         const creditCardData = convertRequest(request)
 
-        const lastPeriod = await expenseCreditCardRepository.getLastPeriodByCreditCardName(creditCardData.name)
-
-        console.log(lastPeriod)
-
-        let periodDate = ""
-        let debtAccount = ""
-        if (lastPeriod.length == 0) {
-            const month = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
-            const key = month.findIndex(it => it == creditCardData.period)
-            periodDate = key + 1
-            debtAccount = creditCardData.debtAccount
-        } else {
-            periodDate = lastPeriod[0].period + 1
-            debtAccount = lastPeriod[0].debtAccount
-        }
-
-        console.log(periodDate)
-
         const newPeriod = {
-            "name": creditCardData.name,
-            "debtAccount": debtAccount,
-            "closeDate": creditCardData.closeDate,
-            "paymentDate": creditCardData.paymentDate,
-            "period": periodDate,
+            ...creditCardData,
             "expenses": [],
             "status": "OPEN"
         }
-
-        console.log(newPeriod)
 
         const result = await expenseCreditCardRepository.subirInfo(newPeriod)
         return result

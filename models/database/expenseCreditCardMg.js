@@ -8,7 +8,8 @@ const expenseExpenseCreditCardSchema = new Schema ({
     debtAccount: {type: String},
     closeDate: {type: Date},
     paymentDate: {type: Date},
-    period: {type: Number},
+    month: {type: String},
+    year: {type: Number},
     expenses: {type: Array},
     status: {type: String}
 })
