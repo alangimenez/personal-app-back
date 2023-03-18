@@ -18,17 +18,17 @@ router.post('/period/close', async (req, res) => {
 })
 
 router.get('/period/:status', async (req, res) => {
-    const result = await expenseCreditCardService.getOpenPeriodByCreditCard(req.params.status)
+    const result = await expenseCreditCardService.getPeriodByStatus(req.params.status)
     res.status(200).json(result)
 })
 
-router.post('/period/status', async (req, res) => {
+router.put('/period/status', async (req, res) => {
     const result = await expenseCreditCardService.changeStatusOfPeriod(req.body)
     res.status(200).json(result)
 })
 
-router.get('/:status', async (req, res) => {
-    const result = await expenseCreditCardService.getExpensesByCreditCardAndPeriod(req.params.status)
+router.get('/expenses', async (req, res) => {
+    const result = await expenseCreditCardService.getExpensesByCreditCardAndPeriod(req.query)
     res.status(200).json(result)
 })
 

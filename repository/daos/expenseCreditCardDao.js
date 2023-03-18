@@ -27,7 +27,7 @@ class expenseCreditCardDao extends CrudMongo {
         }
     }
 
-    async getOpenPeriodByCreditCard(status) {
+    async getPeriodByStatus(status) {
         try {
             const result = await this.model.find({ status: status }, { __v: 0 })
             return result
@@ -36,9 +36,13 @@ class expenseCreditCardDao extends CrudMongo {
         }
     }
 
-    async addExpenseToCreditCardByPeriod(expense, creditCard, period) {
+    async addExpenseToCreditCardByPeriod(expense, batchExpenses) {
         try {
-            const result = await this.model.updateOne({ name: creditCard, period: period }, { $push: { expenses: expense } })
+            const result = await this.model.updateOne({
+                name: batchExpenses.name,
+                year: Number(batchExpenses.year),
+                month: batchExpenses.month
+            }, { $push: { expenses: expense } })
             return result
         } catch (e) {
             console.log(e)
@@ -47,7 +51,11 @@ class expenseCreditCardDao extends CrudMongo {
 
     async changeStatusOfPeriod(creditCard) {
         try {
-            const result = await this.model.updateOne({ name: creditCard.name, period: creditCard.period }, { $set: { status: creditCard.status } })
+            const result = await this.model.updateOne({
+                name: creditCard.name,
+                year: creditCard.year,
+                month: creditCard.month
+            }, { $set: { status: creditCard.status } })
             return result
         } catch (e) {
             console.log(e)
@@ -63,9 +71,9 @@ class expenseCreditCardDao extends CrudMongo {
         }
     }
 
-    async getExpensesOfOpenPeriods(status) {
+    async getExpensesByPeriodAndStatus(name, year, month) {
         try {
-            const result = await this.model.find({ status: status }, { __v: 0 })
+            const result = await this.model.find({ name: name, year: year, month: month }, { __v: 0 })
             return result
         } catch (e) {
             console.log(e)
