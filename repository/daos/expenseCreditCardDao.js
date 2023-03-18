@@ -47,7 +47,10 @@ class expenseCreditCardDao extends CrudMongo {
 
     async changeStatusOfPeriod(creditCard) {
         try {
-            const result = await this.model.updateOne({ name: creditCard.name, period: creditCard.period }, { $set: { status: creditCard.status } })
+            const result = await this.model.updateOne({ 
+                name: creditCard.name, 
+                year: creditCard.year, 
+                month: creditCard.month }, { $set: { status: creditCard.status } })
             return result
         } catch (e) {
             console.log(e)
@@ -63,9 +66,9 @@ class expenseCreditCardDao extends CrudMongo {
         }
     }
 
-    async getExpensesOfOpenPeriods(status) {
+    async getExpensesByPeriodAndStatus(name, year, month) {
         try {
-            const result = await this.model.find({ status: status }, { __v: 0 })
+            const result = await this.model.find({ name: name, year: year, month: month }, { __v: 0 })
             return result
         } catch (e) {
             console.log(e)

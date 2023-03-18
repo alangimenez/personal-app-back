@@ -51,7 +51,12 @@ class ExpenseCreditCardService {
     }
 
     async getPeriodByStatus(status) {
-        const period = await expenseCreditCardRepository.getPeriodByStatus(status)
+        let period = "" 
+        if(status == "ALL") {
+            period = await expenseCreditCardRepository.leerInfo()
+        } else {
+            period = await expenseCreditCardRepository.getPeriodByStatus(status)
+        }
 
         const creditCardNames = []
 
@@ -94,9 +99,6 @@ class ExpenseCreditCardService {
     async changeStatusOfPeriod(request) {
         const creditCardData = convertRequest(request)
 
-        let period = this.month.findIndex(it => it == creditCardData.period)
-        creditCardData.period = period + 1
-
         const result = await expenseCreditCardRepository.changeStatusOfPeriod(creditCardData)
 
         if (creditCardData.status == "PAID") {
@@ -116,18 +118,22 @@ class ExpenseCreditCardService {
                 "date": creditCardPeriod.paymentDate,
                 "currency": "ARS",
                 "credit": creditCardPeriod.debtAccount,
-                "comments": `${creditCardPeriod.name} - ${creditCardPeriod.period}`,
+                "comments": `${creditCardPeriod.name} - ${creditCardPeriod.year} - ${creditCardPeriod.month}`,
                 "expenses": arrayOfExpenses
             }
 
-            expensesService.saveBatchExpenses(batchOfExpenses)
+            expensesService.saveBatchRegisters(batchOfExpenses)
         }
 
         return result
     }
 
-    async getExpensesByCreditCardAndPeriod(status) {
-        let expenses = await expenseCreditCardRepository.getExpensesOfOpenPeriods(status)
+    async getExpensesByCreditCardAndPeriod(request) {
+        const {name, year, month} = request
+        console.log(name, year, month)
+        let expenses = await expenseCreditCardRepository.getExpensesByPeriodAndStatus(name, year, month)
+
+        console.log(expenses)
 
         const response = []
         expenses.map(e => {
