@@ -36,9 +36,13 @@ class expenseCreditCardDao extends CrudMongo {
         }
     }
 
-    async addExpenseToCreditCardByPeriod(expense, creditCard, period) {
+    async addExpenseToCreditCardByPeriod(expense, batchExpenses) {
         try {
-            const result = await this.model.updateOne({ name: creditCard, period: period }, { $push: { expenses: expense } })
+            const result = await this.model.updateOne({
+                name: batchExpenses.name,
+                year: Number(batchExpenses.year),
+                month: batchExpenses.month
+            }, { $push: { expenses: expense } })
             return result
         } catch (e) {
             console.log(e)
@@ -47,10 +51,11 @@ class expenseCreditCardDao extends CrudMongo {
 
     async changeStatusOfPeriod(creditCard) {
         try {
-            const result = await this.model.updateOne({ 
-                name: creditCard.name, 
-                year: creditCard.year, 
-                month: creditCard.month }, { $set: { status: creditCard.status } })
+            const result = await this.model.updateOne({
+                name: creditCard.name,
+                year: creditCard.year,
+                month: creditCard.month
+            }, { $set: { status: creditCard.status } })
             return result
         } catch (e) {
             console.log(e)

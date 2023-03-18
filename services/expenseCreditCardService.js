@@ -34,9 +34,6 @@ class ExpenseCreditCardService {
         let benefitMP = 1
         if (batchExpenses.benefitMP) {benefitMP = 0.3}
 
-        let period = this.month.findIndex(it => it == batchExpenses.period)
-        period = period + 1
-
         batchExpenses.expenses.map(expense => {
             const eachExpense = {
                 "date": new Date(batchExpenses.date),
@@ -44,7 +41,7 @@ class ExpenseCreditCardService {
                 "amount": (expense.debtAmount - expense.discountAmount) * benefitMP,
                 "comments": batchExpenses.comments
             }
-            expenseCreditCardRepository.addExpenseToCreditCardByPeriod(eachExpense, batchExpenses.name, period)
+            expenseCreditCardRepository.addExpenseToCreditCardByPeriod(eachExpense, batchExpenses)
         })
 
         return ({ "message": "ok" })
