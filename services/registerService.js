@@ -43,9 +43,11 @@ class RegistersService {
     async saveBatchRegisters(request) {
         let batchRegisters = convertRequest(request)
 
+        // mercado pago flag
         let benefitMP = 1
-        if (batchRegisters.benefitMP) {benefitMP = 0.3}
+        if (batchRegisters.benefitMP) { benefitMP = 0.3 }
 
+        // investment flag
         if (batchRegisters.investment) {
             if (batchRegisters.operation === "Buy") {
                 const account = await accountService.getNameByTicket(batchRegisters.expenses[0].debtAccount)
@@ -69,11 +71,11 @@ class RegistersService {
                 "comments": batchRegisters.comments
             }
             registerRepository.subirInfo(eachRegister)
-            accountService.updateBalance(register.debtAmount - register.discountAmount, register.debtAccount, "add")
+            accountService.updateBalance(register.debtAmount - register.discountAmount, register.debtAccount, batchRegisters.currency, "add")
             amount = +amount + +eachRegister.debitAmount
         })
 
-        await accountService.updateBalance(amount, batchRegisters.credit, "subtract")
+        await accountService.updateBalance(amount, batchRegisters.credit, batchRegisters.currency, "subtract")
 
         return ({ "message": "ok" })
     }

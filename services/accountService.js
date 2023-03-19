@@ -11,10 +11,10 @@ class AccountService {
         return ({"message": "ok"})
     }
 
-    async updateBalance (amount, account, operation) {
-        const accountInfo = await accountRepository.getAccountByName(account);
+    async updateBalance (amount, account, currency, operation) {
+        const accountInfo = await accountRepository.getAccountByNameAndCurrency(account, currency);
         operation == "add" ? accountInfo[0].balance = +accountInfo[0].balance + amount : accountInfo[0].balance = +accountInfo[0].balance - amount
-        await accountRepository.updateBalance(account, accountInfo[0].balance)
+        await accountRepository.updateBalanceByNameAndCurrency(account, currency, accountInfo[0].balance)
         return ({"message": "ok"})
     }
 
