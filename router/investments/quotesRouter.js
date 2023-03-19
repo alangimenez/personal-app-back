@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const quotesService = require('../services/quotesService');
+const quotesService = require('../../services/investments/quotesService');
 
 router.delete('/all', async (req, res) => {
     const result = await quotesService.deleteAllQuotesByBondName(req.body.bondName);

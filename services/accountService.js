@@ -46,6 +46,11 @@ class AccountService {
         accountsByType.map(it => arrayOfAccountName.push(it.name))
         return arrayOfAccountName
     }
+
+    async getNameByTicket(ticket) {
+        const account = await accountRepository.getAccountByTicket(ticket)
+        return account[0].name
+    }
 }
 
 const accountService = new AccountService()

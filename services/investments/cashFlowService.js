@@ -1,5 +1,5 @@
-const cashFlowRepository = require('../repository/daos/cashflowDao');
-const { diffInDaysBetweenDateAndToday, transformDate, roundToTwo } = require('../utils/utils');
+const cashFlowRepository = require('../../repository/daos/investments/cashflowDao');
+const { diffInDaysBetweenDateAndToday, transformDate, roundToTwo } = require('../../utils/utils');
 const investmentService = require('./investmentService');
 
 class CashFlowService {

@@ -1,6 +1,6 @@
-const { convertRequest } = require('../utils/utils')
-const otherQuotesDao = require('../repository/daos/otherQuotesDao')
-const { addDays } = require('../utils/utils')
+const { convertRequest } = require('../../utils/utils')
+const otherQuotesDao = require('../../repository/daos/investments/otherQuotesDao')
+const { addDays } = require('../../utils/utils')
 const moment = require('moment'); // require
 moment().format();
 

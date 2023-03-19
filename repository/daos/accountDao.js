@@ -57,6 +57,14 @@ class accountDao extends CrudMongo {
             console.log("can't read liquid/fci accounts")
         }
     }
+
+    async getAccountByTicket(ticket) {
+        try {
+            return await this.model.find({ticket: ticket}, { __v: 0 })
+        } catch (e) {
+            console.log("can't read account by ticket")
+        }
+    }
 }
 
 let accountSingleton = new accountDao()

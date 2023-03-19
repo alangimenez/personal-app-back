@@ -1,10 +1,10 @@
-const cashFlowRepository = require('../repository/daos/cashflowDao');
-const lastValueService = require('../services/lastValueService');
+const cashFlowRepository = require('../../repository/daos/investments/cashflowDao');
+const lastValueService = require('./lastValueService');
 const { irr } = require('node-irr');
-const TirModel = require('../models/tirModel')
-const TirResponse = require('../models/tirResponse')
-const tirRepository = require('../repository/daos/tirDao')
-const { diffInDaysBetweenDateAndToday, roundToTwo } = require('../utils/utils')
+const TirModel = require('../../models/tirModel')
+const TirResponse = require('../../models/tirResponse')
+const tirRepository = require('../../repository/daos/investments/tirDao')
+const { diffInDaysBetweenDateAndToday, roundToTwo } = require('../../utils/utils')
 
 class TirService {
     constructor() { }

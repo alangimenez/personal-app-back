@@ -1,4 +1,4 @@
-const investmentRepository = require('../repository/daos/investmentDao')
+const investmentRepository = require('../../repository/daos/investments/investmentDao')
 
 class IiggService {
     constructor () {}

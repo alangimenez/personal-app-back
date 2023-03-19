@@ -46,6 +46,16 @@ class RegistersService {
         let benefitMP = 1
         if (batchRegisters.benefitMP) {benefitMP = 0.3}
 
+        if (batchRegisters.investment) {
+            if (batchRegisters.operation === "Buy") {
+                const account = await accountService.getNameByTicket(batchRegisters.expenses[0].debtAccount)
+                batchRegisters.expenses[0].debtAccount = account
+            } else {
+                const account = await accountService.getNameByTicket(batchRegisters.credit)
+                batchRegisters.credit = account
+            }
+        }
+
         let amount = 0
         batchRegisters.expenses.map((register) => {
             const eachRegister = {

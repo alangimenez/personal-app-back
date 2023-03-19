@@ -1,7 +1,7 @@
-const lastValueRepository = require('../repository/daos/lastValueDao.js');
-const tirRepository = require('../repository/daos/tirDao');
-const Quote = require('../models/quote');
-const { convertRequest } = require('../utils/utils')
+const lastValueRepository = require('../../repository/daos/investments/lastValueDao.js');
+const tirRepository = require('../../repository/daos/investments/tirDao');
+const Quote = require('../../models/quote');
+const { convertRequest } = require('../../utils/utils')
 
 class LastValueService {
     constructor() {}

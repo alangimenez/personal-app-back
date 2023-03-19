@@ -1,6 +1,6 @@
-const quotesRepository = require('../repository/daos/quotesDao')
+const quotesRepository = require('../../repository/daos/investments/quotesDao')
 const lastValueService = require('./lastValueService.js')
-const Quote = require('../models/quote');
+const Quote = require('../../models/quote');
 
 class QuotesService {
     constructor() { }
