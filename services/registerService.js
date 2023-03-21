@@ -96,8 +96,8 @@ class RegistersService {
 
         const result = await registerRepository.subirInfo(earning)
 
-        await accountService.updateBalance(+earning.debitAmount, earning.debit, "add")
-        await accountService.updateBalance(+earning.creditAmount, earning.credit, "add")
+        await accountService.updateBalance(+earning.debitAmount, earning.debit, earning.debitCurrency, "add")
+        await accountService.updateBalance(+earning.creditAmount, earning.credit, earning.creditCurrency, "add")
         return result
     }
 }
