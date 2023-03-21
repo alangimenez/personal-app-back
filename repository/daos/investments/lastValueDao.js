@@ -1,5 +1,5 @@
-const { CrudMongo } = require('../crud/crud');
-const lastValue = require('../../models/database/lastValueMg.js');
+const { CrudMongo } = require('../../crud/crud');
+const lastValue = require('../../../models/database/investments/lastValueMg.js');
 // const { ErrorHandler } = require('../../../error/error');
 // const error = new ErrorHandler();
 

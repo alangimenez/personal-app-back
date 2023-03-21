@@ -42,28 +42,51 @@ class RegistersService {
 
     async saveBatchRegisters(request) {
         let batchRegisters = convertRequest(request)
+        let debitCurrency = batchRegisters.currency
+        let creditCurrency = batchRegisters.currency
 
+        // mercado pago flag
         let benefitMP = 1
-        if (batchRegisters.benefitMP) {benefitMP = 0.3}
+        if (batchRegisters.benefitMP) { benefitMP = 0.3 }
+
+        // investment flag
+        if (batchRegisters.investment) {
+            if (batchRegisters.operation === "Buy") {
+                const account = await accountService.getNameByTicket(batchRegisters.expenses[0].debtAccount)
+                batchRegisters.expenses[0].debtAccount = account
+            } else {
+                const account = await accountService.getNameByTicket(batchRegisters.credit)
+                batchRegisters.credit = account
+            }
+        }
 
         let amount = 0
         batchRegisters.expenses.map((register) => {
+            let debitAmount = (+register.debtAmount - +register.discountAmount) * benefitMP
+            let creditAmount = (+register.debtAmount - +register.discountAmount) * benefitMP
+
+            // investment ars to usd flag
+            if (batchRegisters.arsToUsd) {
+                creditAmount = batchRegisters.creditAmount
+                creditCurrency = batchRegisters.creditCurrency
+            }
+
             const eachRegister = {
                 "date": batchRegisters.date,
                 "debit": register.debtAccount,
-                "debitCurrency": batchRegisters.currency,
-                "debitAmount": (+register.debtAmount - +register.discountAmount) * benefitMP,
+                "debitCurrency": debitCurrency,
+                "debitAmount": debitAmount,
                 "credit": batchRegisters.credit,
-                "creditCurrency": batchRegisters.currency,
-                "creditAmount": (+register.debtAmount - +register.discountAmount) * benefitMP,
+                "creditCurrency": creditCurrency,
+                "creditAmount": creditAmount,
                 "comments": batchRegisters.comments
             }
             registerRepository.subirInfo(eachRegister)
-            accountService.updateBalance(register.debtAmount - register.discountAmount, register.debtAccount, "add")
-            amount = +amount + +eachRegister.debitAmount
+            accountService.updateBalance(register.debtAmount - register.discountAmount, register.debtAccount, debitCurrency, "add")
+            amount = +amount + +eachRegister.creditAmount
         })
 
-        await accountService.updateBalance(amount, batchRegisters.credit, "subtract")
+        await accountService.updateBalance(amount, batchRegisters.credit, creditCurrency, "subtract")
 
         return ({ "message": "ok" })
     }

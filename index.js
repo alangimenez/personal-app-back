@@ -3,15 +3,15 @@ const express = require("express");
 const path = require('path');
 const app = express();
 const cors = require('cors')
-const quotesRouter = require('./router/quotesRouter');
-const lastValueRouter = require('./router/lastValueRouter');
-const tirRouter = require('./router/tirRouter');
-const cashflowRouter = require('./router/cashFlowRouter');
+const quotesRouter = require('./router/investments/quotesRouter');
+const lastValueRouter = require('./router/investments/lastValueRouter');
+const tirRouter = require('./router/investments/tirRouter');
+const cashflowRouter = require('./router/investments/cashFlowRouter');
 const registersRouter = require('./router/registerRouter');
 const accountRouter = require('./router/accountRouter');
-const investmentRouter = require('./router/investmentRouter');
+const investmentRouter = require('./router/investments/investmentRouter');
 const assetTypeRouter = require('./router/assetTypeRouter');
-const otherQuotesRouter = require('./router/otherQuotesRouter');
+const otherQuotesRouter = require('./router/investments/otherQuotesRouter');
 const creditCardRouter = require('./router/creditCardRouter');
 const expenseCreditCardRouter = require('./router/expensesCreditCardRouter');
 const mercadoPagoRouter = require('./router/mercadoPagoRouter')
@@ -36,8 +36,8 @@ app.post("/api", (req, res) => {
     res.json({ message: req.body });
 });
 
-app.use('/quotes' , quotesRouter)
-app.use('/lastvalue',lastValueRouter)
+app.use('/quotes', quotesRouter)
+app.use('/lastvalue', lastValueRouter)
 app.use('/tir', tirRouter)
 app.use('/cashflow', cashflowRouter)
 app.use('/registers', registersRouter)

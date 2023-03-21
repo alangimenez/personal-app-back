@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const iiggService = require('../services/iiggService');
+const iiggService = require('../../services/investments/iiggService');
 
 router.post('/', async (req, res) => {
     const result = await iiggService.saveInvestment(req.body);

@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const otherQuotesService = require('../services/otherQuotesService');
+const otherQuotesService = require('../../services/investments/otherQuotesService');
 
 router.get('/', async (req, res) => {
     const result = await otherQuotesService.getLastQuote()

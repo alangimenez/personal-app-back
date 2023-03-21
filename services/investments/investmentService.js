@@ -1,19 +1,14 @@
-const investmentRepository = require('../repository/daos/investmentDao');
+const investmentRepository = require('../../repository/daos/investments/investmentDao');
 const lastValueService = require('./lastValueService');
-const assetTypeService = require('../services/assetTypeService');
-const otherQuotesService = require('../services/otherQuotesService');
-const { convertRequest } = require('../utils/utils');
+const assetTypeService = require('../assetTypeService');
+const otherQuotesService = require('./otherQuotesService');
+const { convertRequest } = require('../../utils/utils');
 
 class InvestmentService {
     constructor() { }
 
-    async saveInvestment(response) {
-        let investment;
-        if (typeof (response) == 'string') {
-            investment = JSON.parse(response)
-        } else {
-            investment = response
-        }
+    async saveInvestment(request) {
+        let investment = convertRequest(request)
 
         switch (investment.operation) {
             case "Buy":
