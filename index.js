@@ -18,6 +18,7 @@ const mercadoPagoRouter = require('./router/mercadoPagoRouter')
 const periodRouter = require('./router/periodRouter')
 const refundRouter = require('./router/refundRouter')
 const userRouter = require('./router/user/userRouter')
+const auth = require('./middlewares/auth');
 // const midSecurity = require('./middlewares/security');
 
 // habilitar cors
@@ -37,20 +38,20 @@ app.post("/api", (req, res) => {
     res.json({ message: req.body });
 });
 
-app.use('/quotes', quotesRouter)
-app.use('/lastvalue', lastValueRouter)
-app.use('/tir', tirRouter)
-app.use('/cashflow', cashflowRouter)
-app.use('/registers', registersRouter)
-app.use('/account', accountRouter)
-app.use('/investment', investmentRouter)
-app.use('/assettype', assetTypeRouter)
-app.use('/otherquotes', otherQuotesRouter)
-app.use('/creditcard', creditCardRouter)
-app.use('/expensecreditcard', expenseCreditCardRouter)
-app.use('/mercadopago', mercadoPagoRouter)
-app.use('/period', periodRouter)
-app.use('/refund', refundRouter)
+app.use('/quotes', auth, quotesRouter)
+app.use('/lastvalue', auth, lastValueRouter)
+app.use('/tir', auth, tirRouter)
+app.use('/cashflow', auth, cashflowRouter)
+app.use('/registers', auth, registersRouter)
+app.use('/account',auth,  accountRouter)
+app.use('/investment', auth, investmentRouter)
+app.use('/assettype', auth, assetTypeRouter)
+app.use('/otherquotes', auth, otherQuotesRouter)
+app.use('/creditcard', auth, creditCardRouter)
+app.use('/expensecreditcard', auth, expenseCreditCardRouter)
+app.use('/mercadopago', auth, mercadoPagoRouter)
+app.use('/period', auth, periodRouter)
+app.use('/refund', auth, refundRouter)
 app.use('/user', userRouter)
 
 // Todas las peticiones GET que no hayamos manejado en las líneas anteriores retornaran nuestro app React
