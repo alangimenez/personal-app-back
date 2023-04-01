@@ -12,7 +12,8 @@ const registerSchema = new Schema ({
     debitAmount: {type: Number},
     creditAmount: {type: Number},
     comments: {type: String},
-    load: {type: Boolean}
+    load: {type: Boolean}, 
+    type: {type: Array}
 })
 
 const Register = mongoose.model(coleccion, registerSchema);

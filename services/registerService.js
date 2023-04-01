@@ -79,7 +79,8 @@ class RegistersService {
                 "credit": batchRegisters.credit,
                 "creditCurrency": creditCurrency,
                 "creditAmount": creditAmount,
-                "comments": batchRegisters.comments
+                "comments": batchRegisters.comments,
+                "type": batchRegisters.type
             }
             registerRepository.subirInfo(eachRegister)
             accountService.updateBalance(register.debtAmount - register.discountAmount, register.debtAccount, debitCurrency, "add")
