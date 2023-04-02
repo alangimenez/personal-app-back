@@ -9,14 +9,19 @@ class CashFlowService {
     }
 
     async saveCashFlow(cashFlow) {
+
+        const dateOfPayments = []
+        cashFlow.dateOfPayment.map(dop => dateOfPayments.push(new Date(dop)))
+
         return await cashFlowRepository.subirInfo({
             "ticket": cashFlow.ticket,
             "company": cashFlow.company,
             "start": cashFlow.start,
             "finish": cashFlow.finish,
             "rate": cashFlow.rate,
-            "dateInterest": cashFlow.dateInterest,
-            "amountInterest": cashFlow.amountInterest
+            "dateOfPayment": dateOfPayments,
+            "amountInterest": cashFlow.amountInterest,
+            "amountAmortization": cashFlow.amountAmortization
         })
     }
 
