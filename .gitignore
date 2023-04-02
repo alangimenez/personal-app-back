@@ -3,3 +3,5 @@
 /.deta
 /config/dev.env
 /config/prod.env
+.space
+Spacefile
