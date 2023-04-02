@@ -21,6 +21,20 @@ const userRouter = require('./router/user/userRouter')
 const auth = require('./middlewares/auth');
 // const midSecurity = require('./middlewares/security');
 
+// cors???
+app.use((req, res, next) => {
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader(
+        "Access-Control-Allow-Headers",
+        "Origin, X-Requested-With, Content, Accept, Content-Type, Authorization"
+    );
+    res.setHeader(
+        "Access-Control-Allow-Methods",
+        "GET, POST, PUT, DELETE, PATCH, OPTIONS"
+    );
+    next();
+});
+
 // habilitar cors
 app.use(cors())
 
@@ -43,7 +57,7 @@ app.use('/lastvalue', auth, lastValueRouter)
 app.use('/tir', auth, tirRouter)
 app.use('/cashflow', auth, cashflowRouter)
 app.use('/registers', auth, registersRouter)
-app.use('/account',auth,  accountRouter)
+app.use('/account', auth, accountRouter)
 app.use('/investment', auth, investmentRouter)
 app.use('/assettype', auth, assetTypeRouter)
 app.use('/otherquotes', auth, otherQuotesRouter)
