@@ -30,13 +30,13 @@ class CashFlowService {
         const flowOfInterest = []
 
         cashFlows.map((bond) => {
-            for (let i = 0; i < bond.dateInterest.length; i++) {
-                const [year, month, day] = bond.dateInterest[i].split('/')
+            for (let i = 0; i < bond.dateOfPayment.length; i++) {
                 flowOfInterest.push({
-                    "ticket": bond.ticket,
-                    "dateInterest": new Date(+year, +month - 1, +day),
-                    "amountInterest": bond.amountInterest[i],
-                    "remainingsDays": diffInDaysBetweenDateAndToday(new Date(+year, +month - 1, +day))
+                    ticket: bond.ticket,
+                    dateOfPayment: bond.dateOfPayment[i],
+                    amountInterest: bond.amountInterest[i],
+                    amortizationInterest: bond.amountAmortization[i],
+                    remainingsDays: diffInDaysBetweenDateAndToday(bond.dateOfPayment[i])
                 })
             }
         })
@@ -45,12 +45,12 @@ class CashFlowService {
         const response = []
 
         // order by date, consider actualQuantity, delete old flows of money and delete flows that aren't in portfolio
-        flowOfInterest.sort((a, b) => a.dateInterest - b.dateInterest)
+        flowOfInterest.sort((a, b) => a.dateOfPayment - b.dateOfPayment)
         flowOfInterest.map((interest) => {
-            const index = investments.findIndex((asset) => asset.ticket == interest.ticket)
+            const index = investments.findIndex(asset => asset.ticket == interest.ticket)
             if (interest.remainingsDays >= 0 && index >= 0) {
-                interest.dateInterest = transformDate(interest.dateInterest)
-                interest.amountInterest = roundToTwo(interest.amountInterest * investments[index].actualQuantity)
+                interest.dateInterest = transformDate(interest.dateOfPayment)
+                interest.amountInterest = roundToTwo(interest.amountInterest * investments[index].actualQuantity / 100)
                 response.push(interest)
             }
         })

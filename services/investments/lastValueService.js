@@ -73,8 +73,8 @@ class LastValueService {
             response.push({
                 ticket: lastValues[i].ticket,
                 date: lastValues[i].date,
-                price: +lastValues[i].price.toString(),
-                volume: +lastValues[i].volume.toString()
+                price: +lastValues[i].price,
+                volume: +lastValues[i].volume
             })
         }
         return response
