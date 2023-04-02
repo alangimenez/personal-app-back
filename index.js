@@ -21,6 +21,9 @@ const userRouter = require('./router/user/userRouter')
 const auth = require('./middlewares/auth');
 // const midSecurity = require('./middlewares/security');
 
+// habilitar cors
+app.use(cors())
+
 // cors???
 app.use((req, res, next) => {
     res.setHeader("Access-Control-Allow-Origin", "*");
@@ -32,11 +35,9 @@ app.use((req, res, next) => {
         "Access-Control-Allow-Methods",
         "GET, POST, PUT, DELETE, PATCH, OPTIONS"
     );
+    console.log(res)
     next();
 });
-
-// habilitar cors
-app.use(cors())
 
 // Hacer que node sirva los archivos de nuestro app React
 app.use(express.static(path.resolve(__dirname, '../client/build')));
@@ -69,13 +70,11 @@ app.use('/refund', auth, refundRouter)
 app.use('/user', userRouter)
 
 // Todas las peticiones GET que no hayamos manejado en las líneas anteriores retornaran nuestro app React
-app.get('*', (req, res) => {
+/* app.get('*', (req, res) => {
     res.sendFile(path.resolve(__dirname, '../client/build', 'index.html'));
-});
+}); */
 
+const port = parseInt(config.PORT)
 app.listen(config.PORT, () => {
-    console.log(`Server listening on ${config.PORT} with node_env ${config.NODE_ENV}`);
+    console.log(`Server listening on ${port} with node_env ${config.NODE_ENV}`);
 });
-
-// export 'app'
-module.exports = app
