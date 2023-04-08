@@ -50,6 +50,7 @@ class CashFlowService {
             const index = investments.findIndex(asset => asset.ticket == interest.ticket)
             if (interest.remainingsDays >= 0 && index >= 0) {
                 interest.dateInterest = transformDate(interest.dateOfPayment)
+                interest.amortizationInterest = roundToTwo(interest.amortizationInterest * investments[index].actualQuantity / 100)
                 interest.amountInterest = roundToTwo(interest.amountInterest * investments[index].actualQuantity / 100)
                 response.push(interest)
             }
