@@ -35,8 +35,8 @@ class RegistersService {
         return result;
     }
 
-    async changeRegisterstatus(id) {
-        const result = await registerRepository.changeRegisterstatus(id)
+    async changeRegisterStatus(id) {
+        const result = await registerRepository.changeRegisterStatus(id)
         return result
     }
 

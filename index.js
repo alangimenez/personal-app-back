@@ -21,11 +21,9 @@ const userRouter = require('./router/user/userRouter')
 const auth = require('./middlewares/auth');
 // const midSecurity = require('./middlewares/security');
 
-// habilitar cors
 app.use(cors())
 
-// cors???
-app.use((req, res, next) => {
+/* app.use((req, res, next) => {
     res.setHeader("Access-Control-Allow-Origin", "*");
     res.setHeader(
         "Access-Control-Allow-Headers",
@@ -36,7 +34,7 @@ app.use((req, res, next) => {
         "GET, POST, PUT, DELETE, PATCH, OPTIONS"
     );
     next();
-});
+}); */
 
 // Hacer que node sirva los archivos de nuestro app React
 app.use(express.static(path.resolve(__dirname, '../client/build')));
