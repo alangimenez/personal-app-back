@@ -28,7 +28,7 @@ class investmentDao extends CrudMongo {
 
     async getRemainingOperations() {
         try {
-            return await this.model.find({ actualQuantity: { $gt: 0} }, { __v: 0 });
+            return await this.model.find({ actualQuantity: { $gt: 0}, operation: "Buy" }, { __v: 0 });
         } catch (e) {
             logger.error("can't read info by ticket")
             // return error.errorProcess("CRUD Error", `El Crud ha tenido un error -> ` + e.message);
