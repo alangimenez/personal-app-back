@@ -107,6 +107,7 @@ class InvestmentService {
                 if (assetMatch.length > 0) {
                     assetMatch.map(asset => {
                         value = value + (asset.actualQuantity * asset.actualPrice)
+                        // console.log(asset)
                         const element = {
                             "ticket": asset.ticket,
                             "currency": asset.operationCurrency,
@@ -191,6 +192,7 @@ class InvestmentService {
                 remainingQuantity = 0
             }
         }
+        await investmentRepository.subirInfo(register)
     }
 }
 
