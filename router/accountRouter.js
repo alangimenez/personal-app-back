@@ -3,8 +3,12 @@ const router = express.Router();
 const accountService = require('../services/accountService');
 
 router.post('/', async (req, res) => {
-    const result = await accountService.newAccount(req.body);
-    res.status(200).json(result);
+    try {
+        const result = await accountService.newAccount(req.body);
+        res.status(201).json(result);
+    } catch (error) {
+        res.status(400).json({"error": error.message})
+    }
 })
 
 router.get('/', async (req, res) => {

@@ -7,13 +7,13 @@ router.get('/', async (req, res) => {
 })
 
 router.post('/', async (req, res) => {
-  let result = await cashFlowService.saveCashFlow(req.body);
-  if (result.ticket == req.body.ticket) {
-    res.status(201).json({ "message": "ok" })
-  } else {
-    res.status(500).json({ "message": "error" })
-  }
 
+  try {
+    let result = await cashFlowService.saveCashFlow(req.body);
+    res.status(201).json(result)
+  } catch (error) {
+    res.status(500).json({ "error": "Ha ocurrido un error al guardar el cashflow del bono. Motivo: " + error.message })
+  }
 })
 
 router.get('/flow', async (req, res) => {

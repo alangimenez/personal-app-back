@@ -7,8 +7,13 @@ class AccountService {
     async newAccount (request) {
         let account = convertRequest(request)
 
+        let checkIfAccountExist = await accountRepository.getAccountByNameAndCurrency(account.name, account.currency)
+        if (checkIfAccountExist.length > 0) {
+            throw new Error(`La cuenta ${account.name} en moneda ${account.currency} ya existe`)
+        }
+
         const result = await accountRepository.subirInfo(account)
-        return ({"message": "ok"})
+        return result
     }
 
     async updateBalance (amount, account, currency, operation) {

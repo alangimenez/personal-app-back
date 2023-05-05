@@ -1,4 +1,5 @@
 const assetTypeRepository = require('../repository/daos/assetTypeDao')
+const { convertRequest } = require('../utils/utils')
 
 class AssetType {
     constructor(){}
@@ -14,23 +15,13 @@ class AssetType {
     }
 
     async createAssetType(request) {
-        let assetType;
-        if (typeof(request) == 'string') {
-            assetType = JSON.parse(request)
-        } else {
-            assetType = request
-        }
+        let assetType = convertRequest(request);
 
         return await assetTypeRepository.subirInfo(assetType)
     }
 
     async associateTicketWithAssetType(request) {
-        let association;
-        if (typeof(request) == 'string') {
-            association = JSON.parse(request)
-        } else {
-            association = request
-        }
+        let association = convertRequest(request);
 
         const result = await assetTypeRepository.associateTicketWithAssetType(association.ticket, association.assetType)
         return result
