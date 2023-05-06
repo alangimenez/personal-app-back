@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const config = require('../../config/config.environments');
 // const { ErrorHandler } = require('../../error/error');
 // const error = new ErrorHandler();
+const cantCreateObject = require('../../errors/CantCreateObject');
 
 (async () => {
     try {
@@ -56,8 +57,7 @@ class CrudMongo {
             let nuevoObjeto = await this.model.create(objeto);
             return nuevoObjeto
         } catch (e) {
-            console.log('cant subir info' + e)
-            // return error.errorProcess("CRUD Error", `El Crud ha tenido un error -> ` + e.message, res);
+            cantCreateObject(e)
         }
     }
 

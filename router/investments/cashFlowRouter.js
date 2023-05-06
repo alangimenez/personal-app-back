@@ -6,13 +6,12 @@ router.get('/', async (req, res) => {
   res.status(200).json(await cashFlowService.getCashFlow());
 })
 
-router.post('/', async (req, res) => {
-
+router.post('/', async (req, res, next) => {
   try {
     let result = await cashFlowService.saveCashFlow(req.body);
     res.status(201).json(result)
   } catch (error) {
-    res.status(500).json({ "error": "Ha ocurrido un error al guardar el cashflow del bono. Motivo: " + error.message })
+    next(error)
   }
 })
 

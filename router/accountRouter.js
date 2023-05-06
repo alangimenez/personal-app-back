@@ -2,12 +2,12 @@ const express = require('express');
 const router = express.Router();
 const accountService = require('../services/accountService');
 
-router.post('/', async (req, res) => {
+router.post('/', async (req, res, next) => {
     try {
         const result = await accountService.newAccount(req.body);
         res.status(201).json(result);
-    } catch (error) {
-        res.status(400).json({"error": error.message})
+    } catch (e) {
+        next(e)
     }
 })
 

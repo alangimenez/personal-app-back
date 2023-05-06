@@ -1,5 +1,6 @@
 const accountRepository = require('../repository/daos/accountDao');
 const { convertRequest } = require('../utils/utils');
+const duplicateAccount = require('../errors/DuplicateAccount')
 
 class AccountService {
     constructor() {}
@@ -9,7 +10,7 @@ class AccountService {
 
         let checkIfAccountExist = await accountRepository.getAccountByNameAndCurrency(account.name, account.currency)
         if (checkIfAccountExist.length > 0) {
-            throw new Error(`La cuenta ${account.name} en moneda ${account.currency} ya existe`)
+            duplicateAccount(account.name, account.currency)
         }
 
         const result = await accountRepository.subirInfo(account)
