@@ -6,14 +6,13 @@ router.get('/', async (req, res) => {
   res.status(200).json(await cashFlowService.getCashFlow());
 })
 
-router.post('/', async (req, res) => {
-  let result = await cashFlowService.saveCashFlow(req.body);
-  if (result.ticket == req.body.ticket) {
-    res.status(201).json({ "message": "ok" })
-  } else {
-    res.status(500).json({ "message": "error" })
+router.post('/', async (req, res, next) => {
+  try {
+    let result = await cashFlowService.saveCashFlow(req.body);
+    res.status(201).json(result)
+  } catch (error) {
+    next(error)
   }
-
 })
 
 router.get('/flow', async (req, res) => {

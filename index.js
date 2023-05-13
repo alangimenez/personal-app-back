@@ -19,6 +19,7 @@ const periodRouter = require('./router/periodRouter')
 const refundRouter = require('./router/refundRouter')
 const userRouter = require('./router/user/userRouter')
 const auth = require('./middlewares/auth');
+const { handlerError } = require('./middlewares/middlewareError')
 // const midSecurity = require('./middlewares/security');
 
 app.use(cors())
@@ -65,6 +66,7 @@ app.use('/mercadopago', auth, mercadoPagoRouter)
 app.use('/period', auth, periodRouter)
 app.use('/refund', auth, refundRouter)
 app.use('/user', userRouter)
+app.use(handlerError)
 
 // Todas las peticiones GET que no hayamos manejado en las líneas anteriores retornaran nuestro app React
 /* app.get('*', (req, res) => {

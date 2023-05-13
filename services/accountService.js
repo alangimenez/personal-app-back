@@ -1,5 +1,6 @@
 const accountRepository = require('../repository/daos/accountDao');
 const { convertRequest } = require('../utils/utils');
+const duplicateAccount = require('../errors/DuplicateAccount')
 
 class AccountService {
     constructor() {}
@@ -7,8 +8,13 @@ class AccountService {
     async newAccount (request) {
         let account = convertRequest(request)
 
+        let checkIfAccountExist = await accountRepository.getAccountByNameAndCurrency(account.name, account.currency)
+        if (checkIfAccountExist.length > 0) {
+            duplicateAccount(account.name, account.currency)
+        }
+
         const result = await accountRepository.subirInfo(account)
-        return ({"message": "ok"})
+        return result
     }
 
     async updateBalance (amount, account, currency, operation) {

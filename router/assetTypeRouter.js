@@ -13,8 +13,12 @@ router.post('/', async (req, res) => {
 })
 
 router.post('/associate', async (req, res) => {
-    const result = await assetTypeService.associateTicketWithAssetType(req.body)
-    res.status(201).json(result)
+    try {
+        const result = await assetTypeService.associateTicketWithAssetType(req.body)
+        res.status(201).json(result)
+    } catch (error) {
+        res.status(500).json({"error": "Ha ocurrido un error asociado la cuenta al tipo de activo. Motivo: " + error.message})
+    }
 })
 
 module.exports = router
