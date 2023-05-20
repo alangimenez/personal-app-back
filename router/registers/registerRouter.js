@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const registerService = require('../services/registerService');
+const registerService = require('../../services/registerService');
 
 router.post('/', async (req, res) => {
     const result = await registerService.saveRegister(req.body)
@@ -30,6 +30,11 @@ router.post('/batch', async (req, res) => {
 router.post('/earning', async (req, res) => {
     const result = await registerService.saveEarning(req.body)
     res.status(201).json(result)
+})
+
+router.get('/type', async (req, res) => {
+    const result = await registerService.getRegistersByType(req.query)
+    res.status(200).json(result)
 })
 
 module.exports = router
