@@ -1,5 +1,5 @@
-const assetTypeRepository = require('../repository/daos/assetTypeDao')
-const { convertRequest } = require('../utils/utils')
+const assetTypeRepository = require('../../repository/daos/accounts/assetTypeDao')
+const { convertRequest } = require('../../utils/utils')
 
 class AssetType {
     constructor(){}

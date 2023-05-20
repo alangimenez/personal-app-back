@@ -1,6 +1,7 @@
-const accountRepository = require('../repository/daos/accountDao');
-const { convertRequest } = require('../utils/utils');
-const duplicateAccount = require('../errors/DuplicateAccount')
+const accountRepository = require('../../repository/daos/accounts/accountDao');
+const { convertRequest } = require('../../utils/utils');
+const duplicateAccount = require('../../errors/DuplicateAccount')
+const { addCurrencyToDuplicateAccountsAndSort } = require('../../formatter/accounts/accountFormatter')
 
 class AccountService {
     constructor() {}
@@ -29,9 +30,9 @@ class AccountService {
     }
 
     async getExpenseAccounts() {
-        const result =  await accountRepository.getExpenseAccounts()
-        result.sort((a, b) => a.name.localeCompare(b.name))
-        return result
+        const listOfExpenseAccounts =  await accountRepository.getExpenseAccounts()
+        const response = addCurrencyToDuplicateAccountsAndSort(listOfExpenseAccounts)
+        return response
     }
 
     async getLiquidAccounts() {

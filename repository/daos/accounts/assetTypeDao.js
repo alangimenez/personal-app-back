@@ -1,5 +1,5 @@
-const { CrudMongo } = require('../crud/crud');
-const assetTypeModel = require('../../models/database/assetTypeMg');
+const { CrudMongo } = require('../../crud/crud');
+const assetTypeModel = require('../../../models/database/accounts/assetTypeMg');
 // const { ErrorHandler } = require('../../../error/error');
 // const error = new ErrorHandler();
 

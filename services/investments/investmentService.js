@@ -1,6 +1,6 @@
 const investmentRepository = require('../../repository/daos/investments/investmentDao');
 const lastValueService = require('./lastValueService');
-const assetTypeService = require('../assetTypeService');
+const assetTypeService = require('../accounts/assetTypeService');
 const otherQuotesService = require('./otherQuotesService');
 const { convertRequest } = require('../../utils/utils');
 
