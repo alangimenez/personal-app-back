@@ -18,6 +18,7 @@ const mercadoPagoRouter = require('./router/mercadoPagoRouter')
 const periodRouter = require('./router/periodRouter')
 const refundRouter = require('./router/refundRouter')
 const userRouter = require('./router/user/userRouter')
+const monthRegisterRouter = require('./router/registers/monthRegisterRouter')
 const auth = require('./middlewares/auth');
 const { handlerError } = require('./middlewares/middlewareError')
 // const midSecurity = require('./middlewares/security');
@@ -66,6 +67,7 @@ app.use('/mercadopago', auth, mercadoPagoRouter)
 app.use('/period', auth, periodRouter)
 app.use('/refund', auth, refundRouter)
 app.use('/user', userRouter)
+app.use('/monthregister', monthRegisterRouter)
 app.use(handlerError)
 
 // Todas las peticiones GET que no hayamos manejado en las líneas anteriores retornaran nuestro app React

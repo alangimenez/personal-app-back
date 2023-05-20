@@ -1,6 +1,6 @@
-const registerRepository = require('../repository/daos/registerDao');
-const accountService = require('./accounts/accountService');
-const { transformDate, convertRequest } = require('../utils/utils')
+const registerRepository = require('../../repository/daos/registers/registerDao');
+const accountService = require('../accounts/accountService');
+const { transformDate, convertRequest } = require('../../utils/utils')
 
 class RegistersService {
     constructor() { }
