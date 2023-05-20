@@ -5,8 +5,9 @@ const coleccion = 'monthregisters';
 
 const monthRegisterSchema = new Schema ({
     month: {type: String},
-    year: {type: String},
-    values: {type: Array}
+    year: {type: Number},
+    values: {type: Array},
+    status: {type: String}
 })
 
 const MonthRegister = mongoose.model(coleccion, monthRegisterSchema);

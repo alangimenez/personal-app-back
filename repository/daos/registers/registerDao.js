@@ -9,12 +9,12 @@ class registerDao extends CrudMongo {
     }
 
     async getRegistersFilterByDate (date) {
-        try {
+       try {
             const result = await this.model.find({date: { $gt: new Date(date)}}, { __v: 0 })
             return result;
         } catch (e) {
             console.log(e.message)
-        }
+        } 
     }
 
     async getLastTenRegisters () {
