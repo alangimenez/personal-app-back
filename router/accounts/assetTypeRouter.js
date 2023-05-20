@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const assetTypeService = require('../services/assetTypeService');
+const assetTypeService = require('../../services/accounts/assetTypeService');
 
 router.get('/', async (req, res) => {
     const result = await assetTypeService.getAllAssetType()
