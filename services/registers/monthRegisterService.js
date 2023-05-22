@@ -7,7 +7,7 @@ class MonthRegisterService {
 
     async saveMonthRegister() {
         const openMonthRegister = await monthRegisterRepository.getOpenMonthRegister()
-        const valuesToSave = await this.getAllAccountsByType()
+        const valuesToSave = await this.#getAllAccountsByType()
         valuesToSave.forEach(it => accountService.resetBalance(it.accountName, it.currency))
         await monthRegisterRepository.updateMonthRegisterAndCloseIt(openMonthRegister.year, openMonthRegister.month, valuesToSave)
         await this.generateNewMonthRegister(openMonthRegister.year, openMonthRegister.month)
@@ -25,8 +25,16 @@ class MonthRegisterService {
         })
     }
 
+    async getAllMonthRegisters() {
+        return await monthRegisterRepository.leerInfo()
+    }
+
+    async getMonthRegisterByYearAndMonth(request) {
+        return await monthRegisterRepository.getMonthRegisterByYearAndMonth(request.year, request.month)
+    }
+
     // PRIVATE
-    getValuesToSave(listOfAccounts) {
+    #getValuesToSave(listOfAccounts) {
         const valuesToSave = []
         listOfAccounts
             .filter(it => it.balance > 0)
@@ -41,12 +49,12 @@ class MonthRegisterService {
         return valuesToSave
     }
 
-    async getAllAccountsByType() {
+    async #getAllAccountsByType() {
         const accountsType = ['R+', 'R-']
         let valuesToSave = []
         await Promise.all(accountsType.map(async it => {
             const values = await accountService.getAccountsByType(it);
-            valuesToSave = [...valuesToSave, ...this.getValuesToSave(values)];
+            valuesToSave = [...valuesToSave, ...this.#getValuesToSave(values)];
           }));
         return valuesToSave
     }

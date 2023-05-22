@@ -25,6 +25,15 @@ class monthRegisterDao extends CrudMongo {
             console.log(e.message)
         }
     }
+
+    async getMonthRegisterByYearAndMonth(year, month) {
+        try {
+            const result = await this.model.find({year: year, month: month}, { __v: 0 })
+            return result[0];
+        } catch (e) {
+            console.log(e.message)
+        }
+    }
 }
 
 let monthRegisterSingleton = new monthRegisterDao()
