@@ -17,4 +17,9 @@ router.get('/date', async (req, res) => {
     res.status(200).json(result)
 })
 
+router.get('/periods', async (req, res) => {
+    const result = await monthRegisterService.getPeriodsRegistered()
+    res.status(200).json(result)
+})
+
 module.exports = router

@@ -33,6 +33,25 @@ class MonthRegisterService {
         return await monthRegisterRepository.getMonthRegisterByYearAndMonth(request.year, request.month)
     }
 
+    async getPeriodsRegistered() {
+        const periods = await this.getAllMonthRegisters()
+        const years = []
+        periods.forEach(it => {
+            if (!years.includes(it.year)) {years.push(it.year)}
+        })
+        const response = []
+        years.forEach(it => {
+            const periodsFilter = periods.filter(itf => itf.year === it)
+            const month = []
+            periodsFilter.forEach(itfe => month.push(itfe.month))
+            response.push({
+                year: it,
+                month: month
+            })
+        })
+        return response
+    }
+
     // PRIVATE
     #getValuesToSave(listOfAccounts) {
         const valuesToSave = []
