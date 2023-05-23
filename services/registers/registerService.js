@@ -101,6 +101,12 @@ class RegistersService {
         await accountService.updateBalance(+earning.creditAmount, earning.credit, earning.creditCurrency, "add")
         return result
     }
+
+    async getRegistersByType(request) {
+        const types = request.type.split(',')
+
+        return await registerRepository.getRegistersByType(types)
+    }
 }
 
 const registersService = new RegistersService()

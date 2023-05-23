@@ -32,4 +32,9 @@ router.post('/earning', async (req, res) => {
     res.status(201).json(result)
 })
 
+router.get('/type', async (req, res) => {
+    const result = await registerService.getRegistersByType(req.query)
+    res.status(200).json(result)
+})
+
 module.exports = router
