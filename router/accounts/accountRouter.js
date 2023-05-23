@@ -32,7 +32,7 @@ router.get('/liquid-fci', async (req, res) => {
 })
 
 router.get('/type/:type', async (req, res) => {
-    const result = await accountService.getAccountsByType(req.params.type)
+    const result = await accountService.getNamesOfAccountsByType(req.params.type)
     res.status(200).json(result)
 })
 

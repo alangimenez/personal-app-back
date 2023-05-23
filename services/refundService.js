@@ -1,6 +1,6 @@
 const refundRepository = require('../repository/daos/refundDao')
 const { convertRequest } = require('../utils/utils')
-const registerService = require('./registerService')
+const registerService = require('./registers/registerService')
 
 class RefundService {
     constructor() { }

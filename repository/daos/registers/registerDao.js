@@ -1,5 +1,5 @@
-const { CrudMongo } = require('../crud/crud');
-const registerModel = require('../../models/database/registerMg');
+const { CrudMongo } = require('../../crud/crud');
+const registerModel = require('../../../models/database/registers/registerMg');
 // const { ErrorHandler } = require('../../../error/error');
 // const error = new ErrorHandler();
 
@@ -14,7 +14,7 @@ class registerDao extends CrudMongo {
             return result;
         } catch (e) {
             console.log(e.message)
-        }
+        } 
     }
 
     async getLastTenRegisters() {

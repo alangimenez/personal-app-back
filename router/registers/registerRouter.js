@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const registerService = require('../../services/registerService');
+const registerService = require('../../services/registers/registerService');
 
 router.post('/', async (req, res) => {
     const result = await registerService.saveRegister(req.body)
