@@ -3,7 +3,7 @@ const otherQuotesDao = require('../../repository/daos/investments/otherQuotesDao
 const { addDays } = require('../../utils/utils')
 const moment = require('moment'); // require
 moment().format();
-
+const fetch = require('node-fetch')
 
 class OtherQuotesService {
     constructor(){}
@@ -11,7 +11,16 @@ class OtherQuotesService {
     async uploadNewQuote (request) {
         const quote = convertRequest(request)
 
-        await otherQuotesDao.subirInfo(quote)
+        const response = await fetch('https://criptoya.com/api/dolar')
+        const data = await response.json()
+        await otherQuotesDao.subirInfo({
+            date: quote.date,
+            quotes: {
+                dolarbnacomprador: data.oficial,
+                dolarbnavendedor: data.oficial - 12,
+                dolarmep: data.mep
+            }
+        })
         
         return ({'message': 'ok'})
     }
