@@ -8,12 +8,9 @@ const fetch = require('node-fetch')
 class OtherQuotesService {
     constructor() { }
 
-    async uploadNewQuote(request) {
-        const quote = convertRequest(request)
-
-        let sleep = function (ms) {
-            return new Promise(resolve => setTimeout(resolve, ms));
-        };
+    async uploadNewQuote() {
+        const lastQuote = await otherQuotesDao.getLastQuote()
+        const lastQuotesDate = lastQuote[0].date
 
         const response = await fetch('https://criptoya.com/api/dolar')
         const data = await response.json()
@@ -28,7 +25,7 @@ class OtherQuotesService {
         const bitcoinData = await bitcoinResponse.json()
 
         await otherQuotesDao.subirInfo({
-            date: quote.date,
+            date: moment(lastQuotesDate).add(24, 'hours').toDate(),
             quotes: {
                 dolarbnacomprador: data.oficial,
                 dolarbnavendedor: data.oficial - 12,
@@ -38,7 +35,6 @@ class OtherQuotesService {
                 litecoin: litecoinData.market_data.current_price.usd
             }
         })
-
         return ({ 'message': 'ok' })
     }
 
