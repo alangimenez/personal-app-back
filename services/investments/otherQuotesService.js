@@ -11,17 +11,18 @@ class OtherQuotesService {
     async uploadNewQuote() {
         const lastQuote = await otherQuotesDao.getLastQuote()
         const lastQuotesDate = lastQuote[0].date
+        const dateForCriptoFetch = moment(lastQuotesDate).add(60, 'hours').format('DD-MM-YYYY')
 
         const response = await fetch('https://criptoya.com/api/dolar')
         const data = await response.json()
 
-        const ethereumResponse = await fetch('https://api.coingecko.com/api/v3/coins/ethereum')
+        const ethereumResponse = await fetch(`https://api.coingecko.com/api/v3/coins/ethereum/history?date=${dateForCriptoFetch}`)
         const ethereumData = await ethereumResponse.json()
 
-        const litecoinResponse = await fetch('https://api.coingecko.com/api/v3/coins/litecoin')
+        const litecoinResponse = await fetch(`https://api.coingecko.com/api/v3/coins/litecoin/history?date=${dateForCriptoFetch}`)
         const litecoinData = await litecoinResponse.json()
 
-        const bitcoinResponse = await fetch('https://api.coingecko.com/api/v3/coins/bitcoin')
+        const bitcoinResponse = await fetch(`https://api.coingecko.com/api/v3/coins/bitcoin/history?date=${dateForCriptoFetch}`)
         const bitcoinData = await bitcoinResponse.json()
 
         await otherQuotesDao.subirInfo({
