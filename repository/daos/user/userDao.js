@@ -13,6 +13,27 @@ class userDao extends CrudMongo {
             console.log("can't read user by email")
         }
     }
+
+    async getUser(user) {
+        try {
+            return await this.model.find({ user: user }, { __v: 0 });
+        } catch (e) {
+            console.log("can't read user by user")
+        }
+    }
+
+    async editUser(data) {
+        try {
+            return await this.model.updateOne({user: data.user}, {$set: {
+                accessToken: data.accessToken,
+                refreshToken: data.refreshToken,
+                accessTokenExpires: data.accessTokenExpires,
+                refreshTokenExpires: data.refreshTokenExpires
+            }});
+        } catch (e) {
+            console.log("can't edit info")
+        }
+    }
 }
 
 let userSingleton = new userDao()
