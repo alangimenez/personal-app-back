@@ -1,5 +1,5 @@
-const mercadoPagoRepository = require('../repository/daos/mercadoPagoDao')
-const { convertRequest, addOneMonth, addOneYear, getMonthAndYearFromDate } = require('../utils/utils')
+const mercadoPagoRepository = require('../../repository/daos/periods/mercadoPagoDao')
+const { convertRequest, addOneMonth, addOneYear, getMonthAndYearFromDate } = require('../../utils/utils')
 
 class MercadoPagoService {
     constructor() { }

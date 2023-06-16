@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const refundService = require('../services/refundService');
+const refundService = require('../../services/registers/refundService');
 
 router.get('/', async (req, res) => {
     const result = await refundService.getAllRefunds()

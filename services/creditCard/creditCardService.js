@@ -1,4 +1,4 @@
-const creditCardRepository = require('../repository/daos/creditCardDao')
+const creditCardRepository = require('../../repository/daos/creditCard/creditCardDao')
 
 class CreditCardService {
     constructor(){}
