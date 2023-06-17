@@ -4,10 +4,9 @@ const Schema = mongoose.Schema;
 const coleccion = 'lastvalues';
 
 const lastValueSchema = new Schema ({
-    ticket: {type: String},
-    date: {type: String},
-    price: {type: Number},
-    volume: {type: Number}
+    date: {type: Date},
+    quotes: {type: Object},
+    otherQuotes: {type: Object}
 })
 
 const LastValue = mongoose.model(coleccion, lastValueSchema);

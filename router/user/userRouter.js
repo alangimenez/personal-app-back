@@ -14,7 +14,6 @@ router.post('/register', async (req, res) => {
 
 router.post('/get-token-iol', async (req, res) => {
     const token = await userService.getAccessTokenToOperateIol()
-    console.log(token)
     res.status(200).json({"message": "ok"})
 })
 

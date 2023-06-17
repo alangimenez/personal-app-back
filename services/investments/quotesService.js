@@ -1,5 +1,4 @@
 const quotesRepository = require('../../repository/daos/investments/quotesDao')
-const lastValueService = require('./lastValueService.js')
 const userService = require('../user/userService')
 const Quote = require('../../models/quote');
 const fetch = require('node-fetch')
@@ -68,6 +67,14 @@ class QuotesService {
                 publicBonds: publicBondsQuotes
             }
         })
+
+        return {
+            quotes: {
+                obligacionesNegociables: onQuotes,
+                adr: adrQuotes,
+                publicBonds: publicBondsQuotes
+            }
+        }
     }
 
     async #getOnQuotes(token) {

@@ -13,30 +13,32 @@ class OtherQuotesService {
         const lastQuotesDate = lastQuote[0].date
         const dateForCriptoFetch = moment(lastQuotesDate).add(60, 'hours').format('DD-MM-YYYY')
 
-        const response = await fetch('https://criptoya.com/api/dolar')
-        const data = await response.json()
-
-        const ethereumResponse = await fetch(`https://api.coingecko.com/api/v3/coins/ethereum/history?date=${dateForCriptoFetch}`)
-        const ethereumData = await ethereumResponse.json()
-
-        const litecoinResponse = await fetch(`https://api.coingecko.com/api/v3/coins/litecoin/history?date=${dateForCriptoFetch}`)
-        const litecoinData = await litecoinResponse.json()
-
-        const bitcoinResponse = await fetch(`https://api.coingecko.com/api/v3/coins/bitcoin/history?date=${dateForCriptoFetch}`)
-        const bitcoinData = await bitcoinResponse.json()
+        const dollarData = await this.#getDollarData()
+        const ethereumData = await this.#getEthereumData(dateForCriptoFetch)
+        const litecoinData = await this.#getLitecoinData(dateForCriptoFetch)
+        const bitcoinData = await this.#getBitcoinData(dateForCriptoFetch)
 
         await otherQuotesDao.subirInfo({
             date: moment(lastQuotesDate).add(24, 'hours').toDate(),
             quotes: {
-                dolarbnacomprador: data.oficial,
-                dolarbnavendedor: data.oficial - 12,
-                dolarmep: data.mep,
+                dolarbnacomprador: dollarData.oficial,
+                dolarbnavendedor: dollarData.oficial - 12,
+                dolarmep: dollarData.mep,
                 ethereum: ethereumData.market_data.current_price.usd,
                 bitcoint: bitcoinData.market_data.current_price.usd,
                 litecoin: litecoinData.market_data.current_price.usd
             }
         })
-        return ({ 'message': 'ok' })
+        return {
+            quotes: {
+                dolarbnacomprador: dollarData.oficial,
+                dolarbnavendedor: dollarData.oficial - 12,
+                dolarmep: dollarData.mep,
+                ethereum: ethereumData.market_data.current_price.usd,
+                bitcoint: bitcoinData.market_data.current_price.usd,
+                litecoin: litecoinData.market_data.current_price.usd
+            }
+        }
     }
 
     async getLastQuote() {
@@ -49,6 +51,25 @@ class OtherQuotesService {
         })
     }
 
+    async #getDollarData() {
+        const response = await fetch('https://criptoya.com/api/dolar')
+        return await response.json()
+    }
+
+    async #getEthereumData(date) {
+        const ethereumResponse = await fetch(`https://api.coingecko.com/api/v3/coins/ethereum/history?date=${date}`)
+        return await ethereumResponse.json()
+    }
+
+    async #getLitecoinData(date) {
+        const litecoinResponse = await fetch(`https://api.coingecko.com/api/v3/coins/litecoin/history?date=${date}`)
+        return await litecoinResponse.json()
+    }
+
+    async #getBitcoinData(date) {
+        const bitcoinResponse = await fetch(`https://api.coingecko.com/api/v3/coins/bitcoin/history?date=${date}`)
+        return await bitcoinResponse.json()
+    }
 }
 
 const otherQuotesService = new OtherQuotesService()

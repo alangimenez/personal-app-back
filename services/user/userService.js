@@ -101,7 +101,6 @@ class UserService {
         const tokenData = await tokenResponse.json()
         await this.#saveTokenFromIol(tokenData)
         return tokenData.access_token
-        // console.log(new Date('Wed, 14 Jun 2023 21:32:31 GMT'))
     }
 
     async #saveTokenFromIol(token) {

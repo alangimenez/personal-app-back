@@ -1,5 +1,7 @@
 const lastValueRepository = require('../../repository/daos/investments/lastValueDao.js');
 const tirRepository = require('../../repository/daos/investments/tirDao');
+const otherQuotesService = require('./otherQuotesService.js')
+const quotesService = require('./quotesService.js')
 const Quote = require('../../models/quote');
 const { convertRequest } = require('../../utils/utils')
 
@@ -116,6 +118,18 @@ class LastValueService {
         }
 
         return ({"message": "ok"})
+    }
+
+    async saveQuotesAndOtherQuotes() {
+        const quotes = await quotesService.saveInfoFromIol()
+        const otherQuotes = await otherQuotesService.uploadNewQuote()
+
+        await lastValueRepository.subirInfo({
+            date: new Date(),
+            quotes: quotes,
+            otherQuotes: otherQuotes
+        })
+        return ({message: "ok"})
     }
 }
 
