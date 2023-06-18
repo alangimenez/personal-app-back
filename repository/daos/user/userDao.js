@@ -31,7 +31,7 @@ class userDao extends CrudMongo {
                 refreshTokenExpires: data.refreshTokenExpires
             }});
         } catch (e) {
-            console.log("can't edit info")
+            console.log("can't edit info: " + e.message)
         }
     }
 }

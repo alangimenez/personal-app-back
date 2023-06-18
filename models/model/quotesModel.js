@@ -4,3 +4,5 @@ class QuotesModel {
         this.quotes = quotes
     }
 }
+
+module.exports = QuotesModel

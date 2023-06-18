@@ -1,5 +1,5 @@
 const fetch = require('node-fetch')
-const { IOL_USER, IOL_PASSWORD } = require('../../config/config.environments')
+const { IOL_USER, IOL_PASSWORD } = require('../config/config.environments')
 
 class IolApiClient{
     constructor(){}

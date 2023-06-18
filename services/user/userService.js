@@ -62,10 +62,10 @@ class UserService {
         }
 
         if (moment(new Date()).isBefore(token[0].refreshTokenExpires)) {
-            dataAccessToken = iolApiClient.getRefreshTokenFromIol(token[0].refreshToken)
+            dataAccessToken = await iolApiClient.getRefreshTokenFromIol(token[0].refreshToken)
         }
 
-        dataAccessToken = iolApiClient.getAccessTokenFromIol()
+        dataAccessToken = await iolApiClient.getAccessTokenFromIol()
         await this.#saveTokenFromIol(dataAccessToken)
         return dataAccessToken.accessToken
     }

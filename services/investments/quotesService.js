@@ -1,6 +1,7 @@
 const quotesRepository = require('../../repository/daos/investments/quotesDao')
 const userService = require('../user/userService')
 const Quote = require('../../models/quote');
+const QuotesModel = require('../../models/model/quotesModel')
 const iolApiClient = require('../../clients/iolApiClient')
 
 class QuotesService {
