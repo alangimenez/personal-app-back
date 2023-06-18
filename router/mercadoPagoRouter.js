@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const mercadoPagoService = require('../services/mercadoPagoService');
+const logService = require('../services/logs/logService')
 
 router.get('/', async (req, res) => {
     const result = await mercadoPagoService
@@ -14,6 +15,7 @@ router.post('/', async (req, res) => {
 
 router.get('/last', async (req, res) => {
     const result = await mercadoPagoService.getLastPeriod()
+    await logService.createNewMessage("get mercado Pago")
     res.status(200).json(result)
 })
 
