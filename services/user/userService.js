@@ -1,10 +1,9 @@
 const userDao = require('../../repository/daos/user/userDao')
+const iolApiClient = require('../../clients/iolApiClient')
 const { convertRequest } = require('../../utils/utils')
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const config = require('../../config/config.environments');
-const fetch = require('node-fetch')
-const { IOL_USER, IOL_PASSWORD } = require('../../config/config.environments')
 const moment = require('moment');
 
 class UserService {
@@ -56,51 +55,19 @@ class UserService {
 
     async getAccessTokenToOperateIol() {
         const token = await userDao.getUser("IOL")
+        let dataAccessToken
 
         if (moment(new Date()).isBefore(token[0].accessTokenExpires)) {
             return token[0].accessToken
         }
 
         if (moment(new Date()).isBefore(token[0].refreshTokenExpires)) {
-            return this.#getRefreshTokenFromIol(token[0].refreshToken)
+            dataAccessToken = iolApiClient.getRefreshTokenFromIol(token[0].refreshToken)
         }
 
-        return this.#getAccessTokenFromIol()
-    }
-
-    async #getRefreshTokenFromIol(refreshToken) {
-        const tokenResponse = await fetch(
-            `https://api.invertironline.com/token`,
-            {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: new URLSearchParams({
-                    refresh_token: refreshToken,
-                    grant_type: "refresh_token"
-                })
-            }
-        )
-        const tokenData = await tokenResponse.json()
-        await this.#saveTokenFromIol(tokenData)
-        return tokenData.access_token
-    }
-
-    async #getAccessTokenFromIol() {
-        const tokenResponse = await fetch(
-            `https://api.invertironline.com/token`,
-            {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: new URLSearchParams({
-                    username: IOL_USER,
-                    password: IOL_PASSWORD,
-                    grant_type: "password"
-                })
-            }
-        )
-        const tokenData = await tokenResponse.json()
-        await this.#saveTokenFromIol(tokenData)
-        return tokenData.access_token
+        dataAccessToken = iolApiClient.getAccessTokenFromIol()
+        await this.#saveTokenFromIol(dataAccessToken)
+        return dataAccessToken.accessToken
     }
 
     async #saveTokenFromIol(token) {

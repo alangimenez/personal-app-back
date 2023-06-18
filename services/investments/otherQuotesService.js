@@ -1,9 +1,10 @@
-const { convertRequest } = require('../../utils/utils')
 const otherQuotesDao = require('../../repository/daos/investments/otherQuotesDao')
+const coinGeckoApiClient = require('../../clients/coinGeckoApiClient')
+const criptoYaApiClient = require('../../clients/criptoYaApiClient')
+const OtherQuotesModel = require('../../models/model/otherQuotesModel')
 const { addDays } = require('../../utils/utils')
-const moment = require('moment'); // require
+const moment = require('moment');
 moment().format();
-const fetch = require('node-fetch')
 
 class OtherQuotesService {
     constructor() { }
@@ -13,32 +14,25 @@ class OtherQuotesService {
         const lastQuotesDate = lastQuote[0].date
         const dateForCriptoFetch = moment(lastQuotesDate).add(60, 'hours').format('DD-MM-YYYY')
 
-        const dollarData = await this.#getDollarData()
-        const ethereumData = await this.#getEthereumData(dateForCriptoFetch)
-        const litecoinData = await this.#getLitecoinData(dateForCriptoFetch)
-        const bitcoinData = await this.#getBitcoinData(dateForCriptoFetch)
+        const dollarData = await criptoYaApiClient.getDollarData()
+        const ethereumQuote = await coinGeckoApiClient.getEthereumQuoteByDate(dateForCriptoFetch)
+        const litecoinQuote = await coinGeckoApiClient.getLitecoinQuoteByDate(dateForCriptoFetch)
+        const bitcoinQuote = await coinGeckoApiClient.getBitcoinQuoteByDate(dateForCriptoFetch)
+
+        const quotes = new OtherQuotesModel(
+            dollarData.oficial,
+            dollarData.oficial - 12,
+            dollarData.mep,
+            ethereumQuote,
+            litecoinQuote,
+            bitcoinQuote
+        )
 
         await otherQuotesDao.subirInfo({
             date: moment(lastQuotesDate).add(24, 'hours').toDate(),
-            quotes: {
-                dolarbnacomprador: dollarData.oficial,
-                dolarbnavendedor: dollarData.oficial - 12,
-                dolarmep: dollarData.mep,
-                ethereum: ethereumData.market_data.current_price.usd,
-                bitcoint: bitcoinData.market_data.current_price.usd,
-                litecoin: litecoinData.market_data.current_price.usd
-            }
+            quotes: quotes
         })
-        return {
-            quotes: {
-                dolarbnacomprador: dollarData.oficial,
-                dolarbnavendedor: dollarData.oficial - 12,
-                dolarmep: dollarData.mep,
-                ethereum: ethereumData.market_data.current_price.usd,
-                bitcoint: bitcoinData.market_data.current_price.usd,
-                litecoin: litecoinData.market_data.current_price.usd
-            }
-        }
+        return { quotes: quotes }
     }
 
     async getLastQuote() {
@@ -49,26 +43,6 @@ class OtherQuotesService {
             "proxDate": addDays(lastQuote[0].date),
             "date": moment(lastQuote[0].date).add(12, 'hours').format('YYYY-MM-DD')
         })
-    }
-
-    async #getDollarData() {
-        const response = await fetch('https://criptoya.com/api/dolar')
-        return await response.json()
-    }
-
-    async #getEthereumData(date) {
-        const ethereumResponse = await fetch(`https://api.coingecko.com/api/v3/coins/ethereum/history?date=${date}`)
-        return await ethereumResponse.json()
-    }
-
-    async #getLitecoinData(date) {
-        const litecoinResponse = await fetch(`https://api.coingecko.com/api/v3/coins/litecoin/history?date=${date}`)
-        return await litecoinResponse.json()
-    }
-
-    async #getBitcoinData(date) {
-        const bitcoinResponse = await fetch(`https://api.coingecko.com/api/v3/coins/bitcoin/history?date=${date}`)
-        return await bitcoinResponse.json()
     }
 }
 
