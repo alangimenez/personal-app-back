@@ -15,7 +15,6 @@ router.post('/', async (req, res) => {
 
 router.get('/last', async (req, res) => {
     const result = await mercadoPagoService.getLastPeriod()
-    await logService.createNewMessage("get mercado Pago")
     res.status(200).json(result)
 })
 
