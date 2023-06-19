@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const mercadoPagoService = require('../services/mercadoPagoService');
+const logService = require('../services/logs/logService')
 
 router.get('/', async (req, res) => {
     const result = await mercadoPagoService
