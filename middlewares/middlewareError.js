@@ -1,24 +1,37 @@
-const handlerError = (err, req, res, next) => {
-    console.log(`Error: ${err.message}`)
+const ErrorResponse = require('../models/errorResponse')
+const logService = require('../services/logs/logService')
+
+const handlerError = async (err, req, res, next) => {
+    let error
+    let status
     switch (err.message) {
-        case "DuplicateAccount": {
-            const message = `La cuenta ${err.account} en moneda ${err.currency} ya existe`
-            console.log(`Detail: ${message}`)
-            res.status(400).json({"error": message})
+        case "DuplicateAccountException": {
+            error = new ErrorResponse(
+                err.message,
+                `La cuenta ${err.account} en moneda ${err.currency} ya existe`
+            )
+            status = 400
             break
         }
-        case "CantCreateObject": {
-            console.log(`Detail: ${err.detail}`)
-            res.status(500).json({
-                "error": `Ocurrió un error al crear el registro`,
-                "detail": err.detail
-            })
+        case "CantCreateObjectException": {
+            error = new ErrorResponse(
+                err.message,
+                `Ocurrió un error al crear el registor. Detalle: ${err.detail}`
+            )
+            status = 500
             break
         }
         default: {
-            res.status(500).json({"error": `Ocurrio un error inesperado. Motivo: ` + err.message})
+            error = new ErrorResponse(
+                err.message,
+                `Ocurrio un error inesperado. Motivo: ${err.message}`
+            )
+            status = 500
+            break
         }
     }
+    await logService.createNewMessage(error)
+    res.status(status).json(error)
 }
 
 module.exports = { handlerError }

@@ -1,6 +1,6 @@
 const accountRepository = require('../../repository/daos/accounts/accountDao');
 const { convertRequest } = require('../../utils/utils');
-const duplicateAccount = require('../../errors/DuplicateAccount')
+const duplicateAccountException = require('../../errors/DuplicateAccountException')
 const { addCurrencyToDuplicateAccountsAndSort } = require('../../formatter/accounts/accountFormatter')
 
 class AccountService {
@@ -11,7 +11,7 @@ class AccountService {
 
         let checkIfAccountExist = await accountRepository.getAccountByNameAndCurrency(account.name, account.currency)
         if (checkIfAccountExist.length > 0) {
-            duplicateAccount(account.name, account.currency)
+            duplicateAccountException(account.name, account.currency)
         }
 
         const result = await accountRepository.subirInfo(account)
