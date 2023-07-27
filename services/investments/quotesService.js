@@ -3,6 +3,7 @@ const userService = require('../user/userService')
 const Quote = require('../../models/quote');
 const QuotesModel = require('../../models/model/quotesModel')
 const iolApiClient = require('../../clients/iolApiClient')
+const { getActualDayInZero } = require('../../utils/utils')
 
 class QuotesService {
     constructor() { }
@@ -65,8 +66,7 @@ class QuotesService {
             adr: adrQuotes,
             publicBonds: publicBondsQuotes
         }
-        const quotes = new QuotesModel(new Date(), allQuotes)
-
+        const quotes = new QuotesModel(getActualDayInZero(), allQuotes)
         await quotesRepository.subirInfo(quotes)
 
         return allQuotes
