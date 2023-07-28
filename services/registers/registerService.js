@@ -1,6 +1,7 @@
 const registerRepository = require('../../repository/daos/registers/registerDao');
 const accountService = require('../accounts/accountService');
 const { transformDate, convertRequest } = require('../../utils/utils')
+const { formatDateOfMongo } = require('../../formatter/accounts/accountFormatter')
 
 class RegistersService {
     constructor() { }
@@ -105,7 +106,23 @@ class RegistersService {
     async getRegistersByType(request) {
         const types = request.type.split(',')
 
-        return await registerRepository.getRegistersByType(types)
+        let registers = await registerRepository.getRegistersByType(types)
+        let response = []
+        registers.forEach(it => {
+            let object = {
+                date: formatDateOfMongo(it.date),
+                debit: it.debit,
+                debitCurrency: it.debitCurrency,
+                credit: it.credit,
+                creditCurrency: it.creditCurrency,
+                debitAmount: it.debitAmount,
+                creditAmount: it.creditAmount,
+                comments: it.comments,
+                type: it.type
+            }
+            response.push(object)
+        })
+        return response
     }
 }
 
