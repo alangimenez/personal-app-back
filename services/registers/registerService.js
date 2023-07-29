@@ -95,6 +95,7 @@ class RegistersService {
 
     async saveEarning(request) {
         const earning = convertRequest(request)
+        earning.load = false
 
         const result = await registerRepository.subirInfo(earning)
 
