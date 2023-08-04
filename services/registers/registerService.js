@@ -81,7 +81,8 @@ class RegistersService {
                 "creditCurrency": creditCurrency,
                 "creditAmount": creditAmount,
                 "comments": batchRegisters.comments,
-                "type": batchRegisters.type
+                "type": batchRegisters.type,
+                "load": batchRegisters.load
             }
             registerRepository.subirInfo(eachRegister)
             accountService.updateBalance(register.debtAmount - register.discountAmount, register.debtAccount, debitCurrency, "add")
@@ -111,6 +112,28 @@ class RegistersService {
         let response = []
         registers.forEach(it => {
             let object = {
+                date: formatDateOfMongo(it.date),
+                debit: it.debit,
+                debitCurrency: it.debitCurrency,
+                credit: it.credit,
+                creditCurrency: it.creditCurrency,
+                debitAmount: it.debitAmount,
+                creditAmount: it.creditAmount,
+                comments: it.comments,
+                type: it.type,
+                load: it.load
+            }
+            response.push(object)
+        })
+        return response
+    }
+
+    async getRegisterForExcel() {
+        const registers = await registerRepository.getRegistersForExcel()
+        const response = []
+        registers.forEach(it => {
+            let object = {
+                _id: it._id,
                 date: formatDateOfMongo(it.date),
                 debit: it.debit,
                 debitCurrency: it.debitCurrency,
