@@ -18,7 +18,7 @@ const addCurrencyToDuplicateAccountsAndSort = listOfAccounts => {
 }
 
 const formatDateOfMongo = date => {
-    return moment(date).format("yyyy/MM/DD")
+    return moment(date).add(3, 'hours').format("yyyy/MM/DD")
 }
 
 // PRIVATE

@@ -58,7 +58,8 @@ class RefundService {
                     "discountAmount": 0,
                     "debtAmount": refund.amount
                 }
-            ]
+            ],
+            "load": false
         }
         
         const result = await registerService.saveBatchRegisters(expenseToRegister)
@@ -71,6 +72,7 @@ class RefundService {
         let response = []
         refundRegisters.forEach(it => {
             let object = {
+                _id: it._id,
                 date: formatDateOfMongo(it.date),
                 expenses: it.expenses,
                 refund: it.refund,
