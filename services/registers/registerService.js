@@ -63,8 +63,8 @@ class RegistersService {
 
         let amount = 0
         batchRegisters.expenses.map((register) => {
-            let debitAmount = (+register.debtAmount - +register.discountAmount) * benefitMP
-            let creditAmount = (+register.debtAmount - +register.discountAmount) * benefitMP
+            let debitAmount = Number(((+register.debtAmount - +register.discountAmount) * benefitMP).toFixed(2))
+            let creditAmount = Number(((+register.debtAmount - +register.discountAmount) * benefitMP).toFixed(2))
 
             // investment ars to usd flag
             if (batchRegisters.arsToUsd) {
@@ -139,8 +139,8 @@ class RegistersService {
                 debitCurrency: it.debitCurrency,
                 credit: it.credit,
                 creditCurrency: it.creditCurrency,
-                debitAmount: it.debitAmount,
-                creditAmount: it.creditAmount,
+                debitAmount: String(it.debitAmount).replace(".", ","),
+                creditAmount: String(it.creditAmount).replace(".", ","),
                 comments: it.comments,
                 type: it.type
             }
