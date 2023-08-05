@@ -68,6 +68,7 @@ class RegistersService {
 
             // investment ars to usd flag
             if (batchRegisters.arsToUsd) {
+                debitCurrency = 'USD'
                 creditAmount = batchRegisters.creditAmount
                 creditCurrency = batchRegisters.creditCurrency
             }
