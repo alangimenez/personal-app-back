@@ -5,7 +5,8 @@ const coleccion = 'logs';
 
 const logSchema = new Schema ({
     date: {type: Date},
-    message: {type: String}
+    message: {type: Object},
+    stacktrace: {type: String}
 })
 
 const Logs = mongoose.model(coleccion, logSchema);
