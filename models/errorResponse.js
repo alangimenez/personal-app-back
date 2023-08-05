@@ -1,7 +1,8 @@
 class ErrorResponse {
-    constructor(error, detail) {
+    constructor(error, detail, stacktrace) {
         this.error = error
         this.detail = detail
+        this.stacktrace = stacktrace
     }
 }
 

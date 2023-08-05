@@ -118,11 +118,11 @@ class InvestmentService {
                         if (asset.operationCurrency == "USD") {
                             element['priceUsdBna'] = value
                             element['priceUsdMep'] = value
-                            element['priceArsBna'] = value * dollars.quotes.dolarbnacomprador
-                            element['priceArsMep'] = value * dollars.quotes.dolarmep
+                            element['priceArsBna'] = value * dollars.quotes.dolarBnaComprador
+                            element['priceArsMep'] = value * dollars.quotes.dolarMep
                         } else {
-                            element['priceUsdBna'] = value / dollars.quotes.dolarbnavendedor
-                            element['priceUsdMep'] = value / dollars.quotes.dolarmep
+                            element['priceUsdBna'] = value / dollars.quotes.dolarBnaVendedor
+                            element['priceUsdMep'] = value / dollars.quotes.dolarMep
                             element['priceArsBna'] = value
                             element['priceArsMep'] = value
                         }

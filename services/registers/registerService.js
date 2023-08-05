@@ -49,6 +49,9 @@ class RegistersService {
         let benefitMP = 1
         if (batchRegisters.benefitMP) { benefitMP = 0.3 }
 
+        console.log("debtAccount" + batchRegisters.expenses[0].debtAccount)
+        console.log("creditAccount" + batchRegisters.credit)
+
         // investment flag
         if (batchRegisters.investment) {
             if (batchRegisters.operation === "Buy") {

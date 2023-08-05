@@ -8,7 +8,8 @@ const handlerError = async (err, req, res, next) => {
         case "DuplicateAccountException": {
             error = new ErrorResponse(
                 err.message,
-                `La cuenta ${err.account} en moneda ${err.currency} ya existe`
+                `La cuenta ${err.account} en moneda ${err.currency} ya existe`,
+                ""
             )
             status = 400
             break
@@ -16,7 +17,8 @@ const handlerError = async (err, req, res, next) => {
         case "CantCreateObjectException": {
             error = new ErrorResponse(
                 err.message,
-                `Ocurrió un error al crear el registor. Detalle: ${err.detail}`
+                `Ocurrió un error al crear el registor. Detalle: ${err.detail}`,
+                ""
             )
             status = 500
             break
@@ -24,7 +26,8 @@ const handlerError = async (err, req, res, next) => {
         default: {
             error = new ErrorResponse(
                 err.message,
-                `Ocurrio un error inesperado. Motivo: ${err.message}`
+                `Ocurrio un error inesperado. Motivo: ${err.message}`,
+                err.stack
             )
             status = 500
             break
