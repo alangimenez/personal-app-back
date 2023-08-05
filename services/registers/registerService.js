@@ -1,6 +1,7 @@
 const registerRepository = require('../../repository/daos/registers/registerDao');
 const accountService = require('../accounts/accountService');
 const { transformDate, convertRequest } = require('../../utils/utils')
+const { formatDateOfMongo } = require('../../formatter/accounts/accountFormatter')
 
 class RegistersService {
     constructor() { }
@@ -65,8 +66,8 @@ class RegistersService {
 
         let amount = 0
         batchRegisters.expenses.map((register) => {
-            let debitAmount = (+register.debtAmount - +register.discountAmount) * benefitMP
-            let creditAmount = (+register.debtAmount - +register.discountAmount) * benefitMP
+            let debitAmount = Number(((+register.debtAmount - +register.discountAmount) * benefitMP).toFixed(2))
+            let creditAmount = Number(((+register.debtAmount - +register.discountAmount) * benefitMP).toFixed(2))
 
             // investment ars to usd flag
             if (batchRegisters.arsToUsd) {
@@ -83,7 +84,8 @@ class RegistersService {
                 "creditCurrency": creditCurrency,
                 "creditAmount": creditAmount,
                 "comments": batchRegisters.comments,
-                "type": batchRegisters.type
+                "type": batchRegisters.type,
+                "load": batchRegisters.load
             }
             registerRepository.subirInfo(eachRegister)
             accountService.updateBalance(register.debtAmount - register.discountAmount, register.debtAccount, debitCurrency, "add")
@@ -97,6 +99,7 @@ class RegistersService {
 
     async saveEarning(request) {
         const earning = convertRequest(request)
+        earning.load = false
 
         const result = await registerRepository.subirInfo(earning)
 
@@ -108,7 +111,45 @@ class RegistersService {
     async getRegistersByType(request) {
         const types = request.type.split(',')
 
-        return await registerRepository.getRegistersByType(types)
+        let registers = await registerRepository.getRegistersByType(types)
+        let response = []
+        registers.forEach(it => {
+            let object = {
+                date: formatDateOfMongo(it.date),
+                debit: it.debit,
+                debitCurrency: it.debitCurrency,
+                credit: it.credit,
+                creditCurrency: it.creditCurrency,
+                debitAmount: it.debitAmount,
+                creditAmount: it.creditAmount,
+                comments: it.comments,
+                type: it.type,
+                load: it.load
+            }
+            response.push(object)
+        })
+        return response
+    }
+
+    async getRegisterForExcel() {
+        const registers = await registerRepository.getRegistersForExcel()
+        const response = []
+        registers.forEach(it => {
+            let object = {
+                _id: it._id,
+                date: formatDateOfMongo(it.date),
+                debit: it.debit,
+                debitCurrency: it.debitCurrency,
+                credit: it.credit,
+                creditCurrency: it.creditCurrency,
+                debitAmount: String(it.debitAmount).replace(".", ","),
+                creditAmount: String(it.creditAmount).replace(".", ","),
+                comments: it.comments,
+                type: it.type
+            }
+            response.push(object)
+        })
+        return response
     }
 }
 

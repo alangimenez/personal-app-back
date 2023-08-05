@@ -41,4 +41,9 @@ router.get('/type', async (req, res) => {
     res.status(200).json(result)
 })
 
+router.get('/excel', async (req, res) => {
+    const result = await registerService.getRegisterForExcel()
+    res.status(200).json(result)
+})
+
 module.exports = router

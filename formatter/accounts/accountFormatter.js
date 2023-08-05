@@ -1,3 +1,6 @@
+const moment = require('moment'); // require
+moment().format();
+
 const addCurrencyToDuplicateAccountsAndSort = listOfAccounts => {
     listOfAccounts.sort((a, b) => a.name.localeCompare(b.name))
 
@@ -12,6 +15,10 @@ const addCurrencyToDuplicateAccountsAndSort = listOfAccounts => {
 
     return listOfNamesOfAccounts
 
+}
+
+const formatDateOfMongo = date => {
+    return moment(date).add(3, 'hours').format("yyyy/MM/DD")
 }
 
 // PRIVATE
@@ -31,5 +38,6 @@ function encontrarIndicesValoresRepetidos(array) {
 }
 
 module.exports = {
-    addCurrencyToDuplicateAccountsAndSort
+    addCurrencyToDuplicateAccountsAndSort,
+    formatDateOfMongo
 }

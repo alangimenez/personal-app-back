@@ -43,6 +43,15 @@ class registerDao extends CrudMongo {
             console.log(e.message)
         }
     }
+
+    async getRegistersForExcel() {
+        try {
+            const result = await this.model.find({ load: 'false' }).sort({ $natural: 1 })
+            return result
+        } catch (e) {
+            console.log(e.message)
+        }
+    }
 }
 
 let registerSingleton = new registerDao()
