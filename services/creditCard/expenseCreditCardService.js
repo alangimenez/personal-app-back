@@ -158,7 +158,8 @@ class ExpenseCreditCardService {
                 "currency": "ARS",
                 "credit": creditCardPeriod[0].debtAccount,
                 "comments": `${creditCardPeriod[0].name} - ${creditCardPeriod[0].year} - ${creditCardPeriod[0].month}`,
-                "expenses": arrayOfExpenses
+                "expenses": arrayOfExpenses,
+                "load": false
             }
 
             expensesService.saveBatchRegisters(batchOfExpenses)

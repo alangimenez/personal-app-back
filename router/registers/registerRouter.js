@@ -22,9 +22,13 @@ router.post('/status', async (req, res) => {
     res.status(200).json(result)
 })
 
-router.post('/batch', async (req, res) => {
-    const result = await registerService.saveBatchRegisters(req.body)
-    res.status(201).json(result)
+router.post('/batch', async (req, res, next) => {
+    try {
+        const result = await registerService.saveBatchRegisters(req.body)
+        res.status(201).json(result)
+    } catch (error) {
+        next(error)
+    }
 })
 
 router.post('/earning', async (req, res) => {
@@ -34,6 +38,11 @@ router.post('/earning', async (req, res) => {
 
 router.get('/type', async (req, res) => {
     const result = await registerService.getRegistersByType(req.query)
+    res.status(200).json(result)
+})
+
+router.get('/excel', async (req, res) => {
+    const result = await registerService.getRegisterForExcel()
     res.status(200).json(result)
 })
 
