@@ -55,17 +55,18 @@ class UserService {
 
     async getAccessTokenToOperateIol() {
         const token = await userDao.getUser("IOL")
-        let dataAccessToken
 
         if (moment(new Date()).isBefore(token[0].accessTokenExpires)) {
             return token[0].accessToken
         }
 
+        let dataAccessToken
         if (moment(new Date()).isBefore(token[0].refreshTokenExpires)) {
             dataAccessToken = await iolApiClient.getRefreshTokenFromIol(token[0].refreshToken)
+        } else {
+            dataAccessToken = await iolApiClient.getAccessTokenFromIol()
         }
 
-        dataAccessToken = await iolApiClient.getAccessTokenFromIol()
         await this.#saveTokenFromIol(dataAccessToken)
         return dataAccessToken.accessToken
     }

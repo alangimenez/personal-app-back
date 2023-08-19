@@ -4,6 +4,8 @@ const otherQuotesService = require('./otherQuotesService.js')
 const quotesService = require('./quotesService.js')
 const Quote = require('../../models/quote');
 const { convertRequest } = require('../../utils/utils')
+const moment = require('moment'); // require
+moment().format();
 
 class LastValueService {
     constructor() {}
@@ -124,6 +126,8 @@ class LastValueService {
         const quotes = await quotesService.saveInfoFromIol()
         const otherQuotes = await otherQuotesService.uploadNewQuote()
 
+        const lastRegister = await lastValueRepository.getLastRegister()
+        await lastValueRepository.deleteLastRegister(lastRegister._id)
         await lastValueRepository.subirInfo({
             date: new Date(),
             quotes: quotes,
