@@ -81,6 +81,15 @@ class accountDao extends CrudMongo {
             console.log("can't read info by name")
         }
     }
+
+    async getAccountByTicket(ticket) {
+        try {
+            const account = await this.model.find({ ticket: ticket }, { __v: 0 });
+            return account[0]
+        } catch (e) {
+            console.log("can't read info by name")
+        }
+    }
 }
 
 let accountSingleton = new accountDao()

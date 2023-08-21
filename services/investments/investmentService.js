@@ -2,6 +2,7 @@ const investmentRepository = require('../../repository/daos/investments/investme
 const lastValueService = require('./lastValueService');
 const assetTypeService = require('../accounts/assetTypeService');
 const otherQuotesService = require('./otherQuotesService');
+const accountService = require("./../accounts/accountService");
 const { convertRequest } = require('../../utils/utils');
 
 class InvestmentService {
@@ -193,6 +194,94 @@ class InvestmentService {
             }
         }
         await investmentRepository.subirInfo(register)
+    }
+
+    async getTotal() {
+        const operations = await investmentRepository.getRemainingOperations()
+        const lastValuePortfolio = await lastValueService.getAll()
+        const dollars = await otherQuotesService.getLastQuote()
+
+        // agrupa las operaciones del mismo ticket en una sola operacion
+        const portfolio = []
+        operations.map(operation => {
+            const i = portfolio.findIndex(asset => asset.ticket == operation.ticket)
+            if (i >= 0) {
+                portfolio[i].actualQuantity = +portfolio[i].actualQuantity + +operation.actualQuantity.toString()
+            } else {
+                portfolio.push(operation)
+            }
+        })
+
+        // agrega el precio actual a cada activo
+        const portfolioWithPrice = []
+        for (let i = 0; i < portfolio.length; i++) {
+            const key = lastValuePortfolio.findIndex(register => register.ticket == portfolio[i].ticket)
+            if (key >= 0) {
+                const newElement = {
+                    ...portfolio[i]._doc,
+                    'actualPrice': lastValuePortfolio[key].price
+                }
+                portfolioWithPrice.push(newElement)
+            }
+        }
+
+        // crea un listado de tipos de activos
+        const listOfAssetType = []
+        portfolioWithPrice.forEach(asset => {
+            if (!listOfAssetType.includes(asset.assetType)) {
+                listOfAssetType.push(asset.assetType)
+            }
+        })
+
+        // realiza el subtotal por tipo de activo
+        const assetType = []
+        let total = 0
+        listOfAssetType.forEach(item => assetType.push({
+            assetType: item,
+            arsBna: 0,
+            arsMep: 0,
+            usdBna: 0,
+            usdMep: 0,
+            percentage: 0
+        }))
+        for (let i = 0; i < portfolioWithPrice.length; i++) {
+            const valuesOfAsset = await this.#getValuesOfAsset(portfolioWithPrice[i], dollars.quotes)
+            total = total + valuesOfAsset.usdMep
+            const index = assetType.findIndex(at => at.assetType == portfolioWithPrice[i].assetType)
+            assetType[index].arsBna = Number((+assetType[index].arsBna + +valuesOfAsset.arsBna).toFixed(2))
+            assetType[index].arsMep = Number((+assetType[index].arsMep + +valuesOfAsset.usdMep).toFixed(2))
+            assetType[index].usdBna = Number((+assetType[index].usdBna + +valuesOfAsset.usdBna).toFixed(2))
+            assetType[index].usdMep = Number((+assetType[index].usdMep + +valuesOfAsset.usdMep).toFixed(2))
+        }
+
+        // calculo porcentaje
+        for (let i = 0; i < assetType.length; i++) {
+            assetType[i].percentage = Number((assetType[i].usdMep / total * 100).toFixed(2))
+        }
+
+            return {
+                listOfAssetType: listOfAssetType,
+                detail: assetType
+            }
+    }
+
+    async #getValuesOfAsset(asset, quotes) {
+        const assetDetail = await accountService.getAccountByTicket(asset.ticket)
+        if (assetDetail.currency == "ARS") {
+            return {
+                arsBna: asset.actualQuantity * asset.actualPrice,
+                arsMep: asset.actualQuantity * asset.actualPrice,
+                usdBna: (asset.actualQuantity * asset.actualPrice) / quotes.dolarBnaVendedor,
+                usdMep: (asset.actualQuantity * asset.actualPrice) / quotes.dolarMep,
+            }
+        } else {
+            return {
+                arsBna: (asset.actualQuantity * asset.actualPrice) * quotes.dolarBnaComprador,
+                arsMep: (asset.actualQuantity * asset.actualPrice) * quotes.dolarMep,
+                usdBna: asset.actualQuantity * asset.actualPrice,
+                usdMep: asset.actualQuantity * asset.actualPrice,
+            }
+        }
     }
 }
 

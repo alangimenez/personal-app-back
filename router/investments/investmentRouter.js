@@ -17,4 +17,9 @@ router.get('/portfolio', async (req, res) => {
     res.status(200).json(result)
 })
 
+router.get('/total-by-asset-type', async (req, res) => {
+    const result = await investmentService.getTotal()
+    res.status(200).json(result)
+})
+
 module.exports = router;

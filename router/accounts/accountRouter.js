@@ -36,4 +36,9 @@ router.get('/type/:type', async (req, res) => {
     res.status(200).json(result)
 })
 
+router.get('/ticket/:ticket', async (req, res) => {
+    const result = await accountService.getAccountByTicket(req.params.ticket)
+    res.status(200).json(result)
+})
+
 module.exports = router
