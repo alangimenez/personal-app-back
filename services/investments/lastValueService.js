@@ -133,7 +133,7 @@ class LastValueService {
             quotes: quotes,
             otherQuotes: otherQuotes
         })
-        return ({message: "ok"})
+        return
     }
 }
 

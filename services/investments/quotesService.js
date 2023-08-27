@@ -66,8 +66,8 @@ class QuotesService {
             adr: adrQuotes,
             publicBonds: publicBondsQuotes
         }
-        // const quotes = new QuotesModel(getActualDayInZero(), allQuotes)
-        // await quotesRepository.subirInfo(quotes)
+        const quotes = new QuotesModel(getActualDayInZero(), allQuotes)
+        await quotesRepository.subirInfo(quotes)
 
         return allQuotes
     }

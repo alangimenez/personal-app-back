@@ -48,7 +48,6 @@ class lastValueDao extends CrudMongo {
     async deleteLastRegister(id) {
         try {
             const result = await this.model.deleteOne({_id: id})
-            console.log(result)
             return
         } catch (e) {
             console.log("Can't read info by ticket")
