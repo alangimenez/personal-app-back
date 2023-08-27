@@ -8,7 +8,7 @@ router.get('/', async (req, res) => {
 })
 
 router.post('/', async (req, res) => {
-    const result = await otherQuotesService.uploadNewQuote(req.body)
+    const result = await otherQuotesService.uploadNewQuote()
     res.status(201).json(result)
 })
 

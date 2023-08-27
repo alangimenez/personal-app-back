@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const mercadoPagoService = require('../services/mercadoPagoService')
+const mercadoPagoService = require('../../services/periods/mercadoPagoService')
 
 router.post('/', async (req, res) => {
     const result = await mercadoPagoService.createNewPeriod(req.body)

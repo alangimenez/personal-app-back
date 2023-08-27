@@ -17,4 +17,9 @@ router.post('/', async (req, res) => {
     res.json(result);
 })
 
+router.post('/iol', async (req, res) => {
+    await quotesService.saveInfoFromIol();
+    res.json({message: "ok"}).status(201)
+})
+
 module.exports = router

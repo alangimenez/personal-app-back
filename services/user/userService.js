@@ -1,8 +1,10 @@
 const userDao = require('../../repository/daos/user/userDao')
+const iolApiClient = require('../../clients/iolApiClient')
 const { convertRequest } = require('../../utils/utils')
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const config = require('../../config/config.environments');
+const moment = require('moment');
 
 class UserService {
     constructor() { }
@@ -21,7 +23,7 @@ class UserService {
             "password": hashPassword
         })
 
-        return {"message": "ok"}
+        return { "message": "ok" }
     }
 
     async loginUser(request) {
@@ -39,16 +41,44 @@ class UserService {
                     userEmail: dataUser[0].email
                 },
                 config.PRIVATE_KEY,
-                { expiresIn: "1h"}
+                { expiresIn: "1h" }
             )
         } else {
-            return {"message": "Error"}
+            return { "message": "Error" }
         }
 
         return {
             "email": dataUser[0].email,
             "token": token
         }
+    }
+
+    async getAccessTokenToOperateIol() {
+        const token = await userDao.getUser("IOL")
+
+        if (moment(new Date()).isBefore(token[0].accessTokenExpires)) {
+            return token[0].accessToken
+        }
+
+        let dataAccessToken
+        if (moment(new Date()).isBefore(token[0].refreshTokenExpires)) {
+            dataAccessToken = await iolApiClient.getRefreshTokenFromIol(token[0].refreshToken)
+        } else {
+            dataAccessToken = await iolApiClient.getAccessTokenFromIol()
+        }
+
+        await this.#saveTokenFromIol(dataAccessToken)
+        return dataAccessToken.accessToken
+    }
+
+    async #saveTokenFromIol(token) {
+        await userDao.editUser({
+            user: "IOL",
+            accessToken: token.access_token,
+            refreshToken: token.refresh_token,
+            accessTokenExpires: new Date(token['.expires']),
+            refreshTokenExpires: new Date(token['.refreshexpires'])
+        })
     }
 }
 

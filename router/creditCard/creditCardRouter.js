@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const creditCardService = require('../services/creditCardService');
+const creditCardService = require('../../services/creditCard/creditCardService');
 
 router.get('/', async (req, res) => {
     const result = await creditCardService.getAllCreditCards()

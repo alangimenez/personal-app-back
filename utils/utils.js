@@ -65,6 +65,10 @@ const getMonthAndYearFromDate = date => {
     }
 }
 
+const getActualDayInZero = () => {
+    return moment().hours(0).minutes(0).seconds(0).milliseconds(0).toDate()
+}
+
 module.exports = {
     diffInDaysBetweenDateAndToday,
     roundToTwo,
@@ -74,5 +78,6 @@ module.exports = {
     addSpecificDays,
     addOneMonth,
     addOneYear, 
-    getMonthAndYearFromDate
+    getMonthAndYearFromDate,
+    getActualDayInZero
 }

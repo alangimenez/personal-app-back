@@ -1,5 +1,5 @@
-const { CrudMongo } = require('../crud/crud');
-const expenseCreditCardModel = require('../../models/database/expenseCreditCardMg');
+const { CrudMongo } = require('../../crud/crud');
+const expenseCreditCardModel = require('../../../models/database/creditCard/expenseCreditCardMg');
 const creditCardSingleton = require('./creditCardDao');
 // const { ErrorHandler } = require('../../../error/error');
 // const error = new ErrorHandler();

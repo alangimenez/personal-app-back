@@ -1,5 +1,5 @@
-const { CrudMongo } = require('../crud/crud');
-const mercadoPagoModel = require('../../models/database/mercadoPagoMg');
+const { CrudMongo } = require('../../crud/crud');
+const mercadoPagoModel = require('../../../models/database/periods/mercadoPagoMg');
 // const { ErrorHandler } = require('../../../error/error');
 // const error = new ErrorHandler();
 

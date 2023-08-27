@@ -12,11 +12,11 @@ const accountRouter = require('./router/accounts/accountRouter');
 const investmentRouter = require('./router/investments/investmentRouter');
 const assetTypeRouter = require('./router/accounts/assetTypeRouter');
 const otherQuotesRouter = require('./router/investments/otherQuotesRouter');
-const creditCardRouter = require('./router/creditCardRouter');
-const expenseCreditCardRouter = require('./router/expensesCreditCardRouter');
-const mercadoPagoRouter = require('./router/mercadoPagoRouter')
-const periodRouter = require('./router/periodRouter')
-const refundRouter = require('./router/refundRouter')
+const creditCardRouter = require('./router/creditCard/creditCardRouter');
+const expenseCreditCardRouter = require('./router/creditCard/expensesCreditCardRouter');
+const mercadoPagoRouter = require('./router/periods/mercadoPagoRouter')
+const periodRouter = require('./router/periods/periodRouter')
+const refundRouter = require('./router/registers/refundRouter')
 const userRouter = require('./router/user/userRouter')
 const monthRegisterRouter = require('./router/registers/monthRegisterRouter')
 const auth = require('./middlewares/auth');
@@ -24,19 +24,6 @@ const { handlerError } = require('./middlewares/middlewareError')
 // const midSecurity = require('./middlewares/security');
 
 app.use(cors())
-
-/* app.use((req, res, next) => {
-    res.setHeader("Access-Control-Allow-Origin", "*");
-    res.setHeader(
-        "Access-Control-Allow-Headers",
-        "Origin, X-Requested-With, Content, Accept, Content-Type, Authorization"
-    );
-    res.setHeader(
-        "Access-Control-Allow-Methods",
-        "GET, POST, PUT, DELETE, PATCH, OPTIONS"
-    );
-    next();
-}); */
 
 // Hacer que node sirva los archivos de nuestro app React
 app.use(express.static(path.resolve(__dirname, '../client/build')));

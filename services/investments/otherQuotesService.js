@@ -1,22 +1,41 @@
-const { convertRequest } = require('../../utils/utils')
 const otherQuotesDao = require('../../repository/daos/investments/otherQuotesDao')
+const coinGeckoApiClient = require('../../clients/coinGeckoApiClient')
+const criptoYaApiClient = require('../../clients/criptoYaApiClient')
+const OtherQuotesModel = require('../../models/model/otherQuotesModel')
 const { addDays } = require('../../utils/utils')
-const moment = require('moment'); // require
+const moment = require('moment');
 moment().format();
 
-
 class OtherQuotesService {
-    constructor(){}
+    constructor() { }
 
-    async uploadNewQuote (request) {
-        const quote = convertRequest(request)
+    async uploadNewQuote() {
+        const lastQuote = await otherQuotesDao.getLastQuote()
+        const lastQuotesDate = lastQuote[0].date
+        const dateForCriptoFetch = moment(lastQuotesDate).add(60, 'hours').format('DD-MM-YYYY')
 
-        await otherQuotesDao.subirInfo(quote)
-        
-        return ({'message': 'ok'})
+        const dollarData = await criptoYaApiClient.getDollarData()
+        const ethereumQuote = await coinGeckoApiClient.getEthereumQuoteByDate(dateForCriptoFetch)
+        const litecoinQuote = await coinGeckoApiClient.getLitecoinQuoteByDate(dateForCriptoFetch)
+        const bitcoinQuote = await coinGeckoApiClient.getBitcoinQuoteByDate(dateForCriptoFetch)
+
+        const quotes = new OtherQuotesModel(
+            dollarData.oficial,
+            dollarData.oficial - 12,
+            dollarData.mep,
+            ethereumQuote,
+            litecoinQuote,
+            bitcoinQuote
+        )
+
+        await otherQuotesDao.subirInfo({
+            date: moment(lastQuotesDate).add(24, 'hours').toDate(),
+            quotes: quotes
+        })
+        return { quotes: quotes }
     }
 
-    async getLastQuote () {
+    async getLastQuote() {
         const lastQuote = await otherQuotesDao.getLastQuote()
         // const date = new Date(lastQuote[0].date)
         return ({
@@ -25,7 +44,6 @@ class OtherQuotesService {
             "date": moment(lastQuote[0].date).add(12, 'hours').format('YYYY-MM-DD')
         })
     }
-
 }
 
 const otherQuotesService = new OtherQuotesService()

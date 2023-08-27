@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const expenseCreditCardService = require('../services/expenseCreditCardService');
+const expenseCreditCardService = require('../../services/creditCard/expenseCreditCardService');
 
 router.post('/', async (req, res) => {
     const result = await expenseCreditCardService.saveExpenseInCreditCard(req.body)

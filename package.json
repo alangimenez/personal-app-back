@@ -19,6 +19,7 @@
     "jsonwebtoken": "^9.0.0",
     "moment": "^2.29.4",
     "mongoose": "^6.7.0",
+    "node-fetch": "^2.6.11",
     "node-irr": "^2.0.3"
   }
 }

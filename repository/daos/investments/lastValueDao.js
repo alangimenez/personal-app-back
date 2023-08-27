@@ -35,6 +35,24 @@ class lastValueDao extends CrudMongo {
             console.log("Can't read info by ticket")
         }
     }
+
+    async getLastRegister() {
+        try {
+            const result = await this.model.find().sort({$natural:-1}).limit(1)
+            return result[0]
+        } catch (e) {
+            console.log("Can't read info by ticket")
+        }
+    }
+
+    async deleteLastRegister(id) {
+        try {
+            const result = await this.model.deleteOne({_id: id})
+            return
+        } catch (e) {
+            console.log("Can't read info by ticket")
+        }
+    }
 }
 
 let lastValueSingleton = new lastValueDao()

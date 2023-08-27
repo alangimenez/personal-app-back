@@ -1,4 +1,4 @@
-const { convertRequest } = require("../utils/utils")
+const { convertRequest } = require("../../utils/utils")
 const mercadoPagoService = require('./mercadoPagoService')
 
 class PeriodService {

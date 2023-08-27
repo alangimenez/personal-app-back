@@ -1,7 +1,6 @@
-const refundRepository = require('../repository/daos/refundDao')
-const { convertRequest } = require('../utils/utils')
-const registerService = require('./registers/registerService')
-const { formatDateOfMongo } = require('../formatter/accounts/accountFormatter')
+const refundRepository = require('../../repository/daos/registers/refundDao')
+const { convertRequest } = require('../../utils/utils')
+const registerService = require('./registerService')
 
 class RefundService {
     constructor() { }
@@ -58,8 +57,7 @@ class RefundService {
                     "discountAmount": 0,
                     "debtAmount": refund.amount
                 }
-            ],
-            "load": false
+            ]
         }
         
         const result = await registerService.saveBatchRegisters(expenseToRegister)
@@ -68,20 +66,7 @@ class RefundService {
     }
 
     async getAllRefunds() {
-        let refundRegisters = await refundRepository.leerInfo()
-        let response = []
-        refundRegisters.forEach(it => {
-            let object = {
-                _id: it._id,
-                date: formatDateOfMongo(it.date),
-                expenses: it.expenses,
-                refund: it.refund,
-                total: it.total,
-                status: it.status
-            }
-            response.push(object)
-        })
-        return response
+        return await refundRepository.leerInfo()
     }
 }
 
