@@ -62,20 +62,20 @@ class UserService {
 
         let dataAccessToken
         if (moment(new Date()).isBefore(token[0].refreshTokenExpires)) {
-            dataAccessToken = await iolApiClient.getRefreshTokenFromIol(token[0].refreshToken)
+            dataAccessToken = await iolApiClient.getRefreshTokenFromIol(token[0].refresh_token)
         } else {
             dataAccessToken = await iolApiClient.getAccessTokenFromIol()
         }
 
         await this.#saveTokenFromIol(dataAccessToken)
-        return dataAccessToken.accessToken
+        return dataAccessToken.access_token
     }
 
     async #saveTokenFromIol(token) {
         await userDao.editUser({
             user: "IOL",
-            accessToken: token.access_token,
-            refreshToken: token.refresh_token,
+            access_token: token.access_token,
+            refresh_token: token.refresh_token,
             accessTokenExpires: new Date(token['.expires']),
             refreshTokenExpires: new Date(token['.refreshexpires'])
         })

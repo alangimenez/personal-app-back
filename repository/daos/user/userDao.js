@@ -25,8 +25,8 @@ class userDao extends CrudMongo {
     async editUser(data) {
         try {
             return await this.model.updateOne({user: data.user}, {$set: {
-                accessToken: data.accessToken,
-                refreshToken: data.refreshToken,
+                access_token: data.access_token,
+                refresh_token: data.refresh_token,
                 accessTokenExpires: data.accessTokenExpires,
                 refreshTokenExpires: data.refreshTokenExpires
             }});
