@@ -7,8 +7,8 @@ const userSchema = new Schema ({
     user: {type: String},
     email: {type: String},
     password: {type: String},
-    accessToken: {type: String}, 
-    refreshToken: {type: String},
+    access_token: {type: String}, 
+    refresh_token: {type: String},
     accessTokenExpires: {type: Date},
     refreshTokenExpires: {type: Date}
 })

@@ -3,6 +3,7 @@ const express = require("express");
 const path = require('path');
 const app = express();
 const cors = require('cors')
+const lastValueService = require('./services/investments/lastValueService')
 const quotesRouter = require('./router/investments/quotesRouter');
 const lastValueRouter = require('./router/investments/lastValueRouter');
 const tirRouter = require('./router/investments/tirRouter');
@@ -34,10 +35,15 @@ app.get("/api", (req, res) => {
     res.json({ message: "Hola desde el servidor!" });
 });
 
-app.post("/api", (req, res) => {
-    // console.log(JSON.parse(req.body.title))
-    res.json({ message: req.body });
-});
+app.post('/__space/v0/actions', async (req, res) => {
+    const event = req.body.event
+  
+    if (event.id === "test") {
+      await lastValueService.saveQuotesAndOtherQuotes()
+    }
+  
+    res.sendStatus(200)
+  })
 
 app.use('/quotes', auth, quotesRouter)
 app.use('/lastvalue', auth, lastValueRouter)
