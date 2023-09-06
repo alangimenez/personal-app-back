@@ -10,7 +10,8 @@ const userSchema = new Schema ({
     access_token: {type: String}, 
     refresh_token: {type: String},
     accessTokenExpires: {type: Date},
-    refreshTokenExpires: {type: Date}
+    refreshTokenExpires: {type: Date},
+    counter: {type: Number}
 })
 
 const User = mongoose.model(coleccion, userSchema);
