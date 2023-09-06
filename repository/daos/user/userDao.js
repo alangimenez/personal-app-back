@@ -44,6 +44,26 @@ class userDao extends CrudMongo {
             console.log("can't edit counter: " + e.message)
         }
     }
+
+    async saveHistoricalCounter(newMonth) {
+        try {
+            return await this.model.updateOne({user: "IOL"}, {$push: {
+                historical: newMonth
+            }});
+        } catch (e) {
+            console.log("can't save historical counter: " + e.message)
+        }
+    }
+
+    async resetCounter() {
+        try {
+            return await this.model.updateOne({user: "IOL"}, {$set: {
+                counter: 0
+            }});
+        } catch (e) {
+            console.log("can't reset counter: " + e.message)
+        }
+    }
 }
 
 let userSingleton = new userDao()

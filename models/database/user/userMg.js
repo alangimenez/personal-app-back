@@ -11,7 +11,8 @@ const userSchema = new Schema ({
     refresh_token: {type: String},
     accessTokenExpires: {type: Date},
     refreshTokenExpires: {type: Date},
-    counter: {type: Number}
+    counter: {type: Number},
+    historical: {type: Array}
 })
 
 const User = mongoose.model(coleccion, userSchema);
