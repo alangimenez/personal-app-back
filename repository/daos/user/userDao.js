@@ -34,6 +34,16 @@ class userDao extends CrudMongo {
             console.log("can't edit info: " + e.message)
         }
     }
+
+    async incrementCounter(value) {
+        try {
+            return await this.model.updateOne({user: "IOL"}, {$set: {
+                counter: value
+            }});
+        } catch (e) {
+            console.log("can't edit counter: " + e.message)
+        }
+    }
 }
 
 let userSingleton = new userDao()

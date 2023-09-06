@@ -1,5 +1,6 @@
 const fetch = require('node-fetch')
 const { IOL_USER, IOL_PASSWORD } = require('../config/config.environments')
+const userDao = require('../repository/daos/user/userDao')
 
 class IolApiClient{
     constructor(){}
@@ -10,6 +11,7 @@ class IolApiClient{
             headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }
         }
         const quotesResponse = await fetch(`https://api.invertironline.com/api/v2/Cotizaciones/obligacionesNegociables/argentina/Todos`, requestOptions)
+        await this.#incrementCounter()
         return await quotesResponse.json() 
     }
 
@@ -19,6 +21,7 @@ class IolApiClient{
             headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }
         }
         const quotesResponse = await fetch(`https://api.invertironline.com/api/v2/Cotizaciones/aDRs/estados_Unidos/Todos`, requestOptions)
+        await this.#incrementCounter()
         return await quotesResponse.json() 
     }
 
@@ -28,6 +31,7 @@ class IolApiClient{
             headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }
         }
         const quotesResponse = await fetch(`https://api.invertironline.com/api/v2/Cotizaciones/bonos/bCBA/argentina`, requestOptions)
+        await this.#incrementCounter()
         return await quotesResponse.json() 
     }
 
@@ -43,6 +47,7 @@ class IolApiClient{
                 })
             }
         )
+        await this.#incrementCounter()
         return await tokenResponse.json()
     }
 
@@ -59,7 +64,14 @@ class IolApiClient{
                 })
             }
         )
+        await this.#incrementCounter()
         return await tokenResponse.json()
+    }
+
+    async #incrementCounter() {
+        const userData = await userDao.getUser("IOL")
+        await userDao.incrementCounter(userData[0].counter + 1)
+        return
     }
 }
 
