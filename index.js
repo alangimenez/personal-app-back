@@ -20,6 +20,7 @@ const periodRouter = require('./router/periods/periodRouter')
 const refundRouter = require('./router/registers/refundRouter')
 const userRouter = require('./router/user/userRouter')
 const monthRegisterRouter = require('./router/registers/monthRegisterRouter')
+const scheduledTasksRouter = require('./router/scheduledTasks/scheduledTasksRouter')
 const auth = require('./middlewares/auth');
 const { handlerError } = require('./middlewares/middlewareError')
 // const midSecurity = require('./middlewares/security');
@@ -32,18 +33,18 @@ app.use(express.json());
 
 // Manejar las peticiones GET en la ruta /api
 app.get("/api", (req, res) => {
-    res.json({ message: "Hola desde el servidor!" });
+  res.json({ message: "Hola desde el servidor!" });
 });
 
-app.post('/__space/v0/actions', async (req, res) => {
-    const event = req.body.event
-  
-    if (event.id === "test") {
-      await lastValueService.saveQuotesAndOtherQuotes()
-    }
-  
-    res.sendStatus(200)
-  })
+/* app.post('/__space/v0/actions', async (req, res) => {
+  const event = req.body.event
+
+  if (event.id === "test") {
+    await lastValueService.saveQuotesAndOtherQuotes()
+  }
+
+  res.sendStatus(200)
+}) */
 
 app.use('/quotes', auth, quotesRouter)
 app.use('/lastvalue', auth, lastValueRouter)
@@ -61,6 +62,7 @@ app.use('/period', auth, periodRouter)
 app.use('/refund', auth, refundRouter)
 app.use('/user', userRouter)
 app.use('/monthregister', monthRegisterRouter)
+app.use('/__space/v0/actions', scheduledTasksRouter)
 app.use(handlerError)
 
 // Todas las peticiones GET que no hayamos manejado en las líneas anteriores retornaran nuestro app React
@@ -70,5 +72,5 @@ app.use(handlerError)
 
 const port = parseInt(config.PORT)
 app.listen(config.PORT, () => {
-    console.log(`Server listening on ${port} with node_env ${config.NODE_ENV}`);
+  console.log(`Server listening on ${port} with node_env ${config.NODE_ENV}`);
 });

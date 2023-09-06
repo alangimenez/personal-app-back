@@ -71,6 +71,17 @@ class UserService {
         return dataAccessToken.access_token
     }
 
+    async resetCounterOfIolClient() {
+        const userData = await userDao.getUser("IOL")
+        const newMonth = {
+            date: new Date(),
+            counter: userData[0].counter
+        }
+        await userDao.saveHistoricalCounter(newMonth)
+        await userDao.resetCounter()
+        return
+    }
+
     async #saveTokenFromIol(token) {
         await userDao.editUser({
             user: "IOL",
