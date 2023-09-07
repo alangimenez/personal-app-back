@@ -4,7 +4,7 @@ const Quote = require('../../models/quote');
 const QuotesModel = require('../../models/model/quotesModel')
 const iolApiClient = require('../../clients/iolApiClient')
 const { getActualDayInZero } = require('../../utils/utils')
-const cashflowService = require('../investments/cashFlowService')
+const cashflowRepository = require('../../repository/daos/investments/cashflowDao')
 
 class QuotesService {
     constructor() { }
@@ -57,7 +57,7 @@ class QuotesService {
 
     async saveInfoFromIol() {
         const token = await userService.getAccessTokenToOperateIol()
-        const uploadedBonds = await cashflowService.getCashFlow()
+        const uploadedBonds = await cashflowRepository.leerInfo()
         const listOfUploadedBonds = this.#getListOfUploadedBonds(uploadedBonds)
 
         const onQuotes = await iolApiClient.getOnQuotes(token)
