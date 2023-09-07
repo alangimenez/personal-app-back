@@ -57,7 +57,7 @@ class UserService {
         const token = await userDao.getUser("IOL")
 
         if (moment(new Date()).isBefore(token[0].accessTokenExpires)) {
-            return token[0].accessToken
+            return token[0].access_token
         }
 
         let dataAccessToken

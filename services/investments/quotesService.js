@@ -4,6 +4,7 @@ const Quote = require('../../models/quote');
 const QuotesModel = require('../../models/model/quotesModel')
 const iolApiClient = require('../../clients/iolApiClient')
 const { getActualDayInZero } = require('../../utils/utils')
+const cashflowService = require('../investments/cashFlowService')
 
 class QuotesService {
     constructor() { }
@@ -56,20 +57,37 @@ class QuotesService {
 
     async saveInfoFromIol() {
         const token = await userService.getAccessTokenToOperateIol()
+        const uploadedBonds = await cashflowService.getCashFlow()
+        const listOfUploadedBonds = this.#getListOfUploadedBonds(uploadedBonds)
 
         const onQuotes = await iolApiClient.getOnQuotes(token)
         const adrQuotes = await iolApiClient.getAdrQuotes(token)
         const publicBondsQuotes = await iolApiClient.getPublicBondsQuotes(token)
+        const onQuotesFiltered = this.#getAssetsFiltered(onQuotes.titulos, listOfUploadedBonds)
+        const adrQuotesFiltered = this.#getAssetsFiltered(adrQuotes.titulos, listOfUploadedBonds)
+        const publicBondsQuotesFiltered = this.#getAssetsFiltered(publicBondsQuotes.titulos, listOfUploadedBonds)
 
         const allQuotes = {
-            obligacionesNegociables: onQuotes,
-            adr: adrQuotes,
-            publicBonds: publicBondsQuotes
+            obligacionesNegociables: onQuotesFiltered,
+            adr: adrQuotesFiltered,
+            publicBonds: publicBondsQuotesFiltered
         }
         const quotes = new QuotesModel(getActualDayInZero(), allQuotes)
         await quotesRepository.subirInfo(quotes)
 
         return allQuotes
+    }
+
+    #getListOfUploadedBonds(uploadedBonds) {
+        const listOfUploadedBonds = []
+        uploadedBonds.forEach(value => {
+            listOfUploadedBonds.push(value.ticket)
+        })
+        return listOfUploadedBonds
+    }
+
+    #getAssetsFiltered(assets, listOfFilter) {
+        return assets.filter(it => listOfFilter.includes(it.simbolo))
     }
 }
 
