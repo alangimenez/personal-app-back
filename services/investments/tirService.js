@@ -71,27 +71,15 @@ class TirService {
             const daysDiff = diffInDaysBetweenDateAndToday(new Date(cashFlows[i].dateOfPayment[numberOfPayments - 1]))
             const indexLastValue = lastValueQuotes.findIndex(it => it.simbolo == cashFlows[i].ticket)
 
-            // crea un array con los días faltantes y lo setea todo a cero
+            // generate an array with all payments by day
             const cashFlow = this.#generateDailyConsolidedCashflow(
                 +lastValueQuotes[indexLastValue].ultimoPrecio - 1 + 1,
                 cashFlows[i],
                 daysDiff,
                 numberOfPayments
             )
-            /* const cashFlow = new Array(daysDiff);
-            for (let j = 0; j < cashFlow.length; j++) {
-                cashFlow[j] = 0
-            } */
 
-            // incorpora el monto de intereses en el array del cashflow
-            /* for (let k = 0; k < numberOfPayments; k++) {
-                cashFlow[diffInDaysBetweenDateAndToday(new Date(cashFlows[i].dateOfPayment[k]))] = +cashFlows[i].amountInterest[k] + +cashFlows[i].amountAmortization[k]
-            } */
-
-            // incorpora el gasto de inversión al momento cero con la última cotización
-
-
-            // calculate tir and persist result in DB
+            // calculate tir
             let tirDaily = irr(cashFlow)
             let tirAnnual = Math.pow(1 + tirDaily, 365)
             let tirAnnualRound = roundToTwo(((tirAnnual) - 1))
