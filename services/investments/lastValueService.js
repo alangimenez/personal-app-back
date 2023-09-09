@@ -135,6 +135,15 @@ class LastValueService {
         })
         return
     }
+
+    async getData() {
+        const data = await lastValueRepository.leerInfo()
+        return [
+            ...data[0].quotes.obligacionesNegociables,
+            ...data[0].quotes.adr,
+            ...data[0].quotes.publicBonds
+        ]
+    }
 }
 
 const lastValueService = new LastValueService()

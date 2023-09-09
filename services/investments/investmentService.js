@@ -2,6 +2,10 @@ const investmentRepository = require('../../repository/daos/investments/investme
 const lastValueService = require('./lastValueService');
 const assetTypeService = require('../accounts/assetTypeService');
 const otherQuotesService = require('./otherQuotesService');
+const accountService = require('../accounts/accountService')
+const iolApiClient = require('../../clients/iolApiClient')
+const userService = require('../user/userService')
+const tirService = require('../investments/tirService')
 const { convertRequest } = require('../../utils/utils');
 
 class InvestmentService {
@@ -12,10 +16,10 @@ class InvestmentService {
 
         switch (investment.operation) {
             case "Buy":
-                await this.operationBuy(investment)
+                await this.#operationBuy(investment)
                 break;
             case "Sell":
-                await this.operationSell(investment)
+                await this.#operationSell(investment)
                 break;
             default:
                 break
@@ -167,9 +171,24 @@ class InvestmentService {
         return finalResponse
     }
 
-    // PRIVATE
+    async getBalance() {
+        const assets = await accountService.getAssetsWithBalance()
+        const listOfAssetsName = this.#getNameOfAssets(assets)
+        const token = await userService.getAccessTokenToOperateIol()
+        const onQuotes = await iolApiClient.getOnQuotes(token)
+        const adrQuotes = await iolApiClient.getOnQuotes(token)
+        const quotes = [...onQuotes.titulos, ...adrQuotes.titulos]
+        const quotesFiltered = quotes.filter(it => listOfAssetsName.includes(it.simbolo))
+        let assetsWithValue = this.#getAssetsWithValue(assets, quotesFiltered)
+        const lastValues = await lastValueService.getData()
+        assetsWithValue = this.#addDayPercentage(assetsWithValue, lastValues)
+        const assetsTir = await tirService.generateTir(listOfAssetsName)
+        console.log(assetsTir)
+        return assetsWithValue
+    }
 
-    async operationBuy(register) {
+    // PRIVATE
+    async #operationBuy(register) {
         register = {
             ...register,
             "actualQuantity": register.operationQuantity
@@ -177,7 +196,7 @@ class InvestmentService {
         await investmentRepository.subirInfo(register)
     }
 
-    async operationSell(register) {
+    async #operationSell(register) {
         const operations = await investmentRepository.getOperationsByTicket(register.ticket);
         operations.sort((a, b) => a.operationDate - b.operationDate);
         let remainingQuantity = register.operationQuantity
@@ -193,6 +212,42 @@ class InvestmentService {
             }
         }
         await investmentRepository.subirInfo(register)
+    }
+
+    #getNameOfAssets(assets) {
+        const listOfAssetNames = []
+        assets.map(it => listOfAssetNames.push(it.ticket))
+        return listOfAssetNames
+    }
+
+    #getAssetsWithValue(assets, values) {
+        const assetsWithValue = new Array
+        assets.map(asset => {
+            const index = values.findIndex(value => value.simbolo == asset.ticket)
+            assetsWithValue.push({
+                ticket: asset.ticket,
+                quantity: asset.quantity,
+                value: values[index].ultimoPrecio,
+                balance: ((asset.quantity) * values[index].ultimoPrecio) / 100
+            })
+        })
+        return assetsWithValue
+    }
+
+    #addDayPercentage(assets, previousValues) {
+        const response = new Array
+        assets.map(asset => {
+            const index = previousValues.findIndex(previousValue => previousValue.simbolo == asset.ticket)
+            const dayDiff = ((asset.balance / asset.quantity) * 100) - previousValues[index].ultimoPrecio
+            response.push({
+                ticket: asset.ticket,
+                quantity: asset.quantity,
+                value: asset.value,
+                balance: asset.balance,
+                dayPercentage: `${Number((dayDiff / previousValues[index].ultimoPrecio) * 100).toFixed(2)}%`
+            })
+        })
+        return response
     }
 }
 

@@ -5,25 +5,28 @@ const TirModel = require('../../models/tirModel')
 const TirResponse = require('../../models/tirResponse')
 const tirRepository = require('../../repository/daos/investments/tirDao')
 const { diffInDaysBetweenDateAndToday, roundToTwo } = require('../../utils/utils')
+const moment = require('moment'); // require
+moment().format();
 
 class TirService {
     constructor() { }
 
-    async generateTir() {
+    async generateTir(assets) {
         // obtiene los cashFlows de todos los bonos (cambiar repository por service)
-        const cashFlows = await cashFlowRepository.leerInfo()
+        const allCashFlows = await cashFlowRepository.leerInfo()
+        const cashFlows = allCashFlows.filter(it => assets.includes(it.ticket))
 
         // calculo del tir
         let arrayTir = []
         for (let i = 0; i < cashFlows.length; i++) {
             // obtiene la última cotizacion guardada de un bono en particular
-            const lastValueBond = await lastValueService.getInfoByBondName(cashFlows[i].bondName);
-
-            // agrega la inversión en el momento cero al cashflow
-            cashFlows[i].cashFlow.unshift(-(lastValueBond[0].closePrice - 1 + 1));
+            const lastValues = await lastValueService.getData()
+            const index = lastValues.findIndex(it => it.simbolo == cashFlows[i].ticket)
+            const remainingPayments = cashFlows[i].dateOfPayment.filter(it => moment(it).isAfter(new Date()))
+            const cashflow = this.#generateConsolidedCashflow(lastValues[index].ultimoPrecio, remainingPayments.length, cashFlows[i])
 
             // calcula la tir y guarda la información en la base de datos
-            let tirMonthly = irr(cashFlows[i].cashFlow)
+            let tirMonthly = irr(cashflow)
             let tirAnnual = Math.pow(1 + tirMonthly, 12)
             let tirAnnualRound = roundToTwo(((tirAnnual) - 1))
             let tirModel = new TirModel(
@@ -109,6 +112,15 @@ class TirService {
 
     async getTir() {
         return tirRepository.leerInfo()
+    }
+
+    #generateConsolidedCashflow(lastPrice, paymentQuantity, cashflowData) {
+        const arrayOfPayments = new Array
+        for (let j = paymentQuantity; j > 0; j--) {
+            arrayOfPayments.unshift(+cashflowData.amountInterest[j + 1] + +cashflowData.amountAmortization[j + 1])
+        }
+        arrayOfPayments.unshift(-lastPrice)
+        return arrayOfPayments
     }
 }
 

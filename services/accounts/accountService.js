@@ -66,6 +66,10 @@ class AccountService {
     async getAccountsByType(type) {
         return await accountRepository.getAccountsByType(type)
     }
+
+    async getAssetsWithBalance() {
+        return await accountRepository.getAssetsWithBalance()
+    }
 }
 
 const accountService = new AccountService()

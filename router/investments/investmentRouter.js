@@ -17,4 +17,13 @@ router.get('/portfolio', async (req, res) => {
     res.status(200).json(result)
 })
 
+router.get('/balance', async (req, res, next) => {
+    try {
+        const result = await investmentService.getBalance()
+        res.status(200).json(result)
+    } catch (e) {
+        next(e)
+    }
+})
+
 module.exports = router;

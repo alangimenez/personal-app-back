@@ -81,6 +81,14 @@ class accountDao extends CrudMongo {
             console.log("can't read info by name")
         }
     }
+
+    async getAssetsWithBalance() {
+        try {
+            return await this.model.find({ type: 'A', quantity: {$gt: 0} }, { __v: 0 });
+        } catch (e) {
+            console.log("can't get assets.")
+        }
+    }
 }
 
 let accountSingleton = new accountDao()
