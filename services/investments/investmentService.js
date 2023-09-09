@@ -182,8 +182,8 @@ class InvestmentService {
         let assetsWithValue = this.#getAssetsWithValue(assets, quotesFiltered)
         const lastValues = await lastValueService.getData()
         assetsWithValue = this.#addDayPercentage(assetsWithValue, lastValues)
-        const assetsTir = await tirService.generateTir(listOfAssetsName)
-        console.log(assetsTir)
+        const assetsTir = await tirService.generateTirDaily(listOfAssetsName)
+        assetsWithValue = this.#addTir(assetsWithValue, assetsTir)
         return assetsWithValue
     }
 
@@ -245,6 +245,22 @@ class InvestmentService {
                 value: asset.value,
                 balance: asset.balance,
                 dayPercentage: `${Number((dayDiff / previousValues[index].ultimoPrecio) * 100).toFixed(2)}%`
+            })
+        })
+        return response
+    }
+
+    #addTir(assets, tirValues) {
+        const response = new Array
+        assets.map(asset => {
+            const index = tirValues.findIndex(tir => tir.ticket == asset.ticket)
+            response.push({
+                ticket: asset.ticket,
+                quantity: asset.quantity,
+                value: asset.value,
+                balance: asset.balance,
+                dayPercentage: asset.dayPercentage,
+                tir: `${tirValues[index].tirAnnualRound * 100}%`
             })
         })
         return response

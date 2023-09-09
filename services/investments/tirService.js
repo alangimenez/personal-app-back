@@ -52,57 +52,57 @@ class TirService {
         return arrayTir;
     }
 
-    async generateTirDaily() {
+    async generateTirDaily(assets) {
         // obtiene los cashFlows de todos los bonos
         const cashFlowsData = await cashFlowRepository.leerInfo()
-        const tirData = await tirRepository.leerInfo()
-        let tirAnnualRound = 0;
+        const cashFlows = cashFlowsData.filter(it => assets.includes(it.ticket))
+        const lastValueQuotes = await lastValueService.getData()
+        // const tirData = await tirRepository.leerInfo()
+        // let tirAnnualRound = 0;
 
         // ESTO SOLO SERÍA NECESARIO SI QUISIERA ACTUALIZAR LA TIR DE UN BONO EN PARTICULAR
         // obtiene el indice del bono que se quiere calcular la tir
         // const bondIndex = cashFlowsData.findIndex((bond) => bond.bondName == bondName)
 
-        for (let i = 0; i < cashFlowsData.length; i++) {
+        const tirDailyArray = new Array
+        for (let i = 0; i < cashFlows.length; i++) {
             // calcula cuantos días faltan hasta el vencimiento del ticket
-            const daysDiff = diffInDaysBetweenDateAndToday(new Date(cashFlowsData[i].finish))
+            const numberOfPayments = cashFlows[i].dateOfPayment.length
+            const daysDiff = diffInDaysBetweenDateAndToday(new Date(cashFlows[i].dateOfPayment[numberOfPayments - 1]))
+            const indexLastValue = lastValueQuotes.findIndex(it => it.simbolo == cashFlows[i].ticket)
 
             // crea un array con los días faltantes y lo setea todo a cero
-            const cashFlow = new Array(daysDiff);
+            const cashFlow = this.#generateDailyConsolidedCashflow(
+                +lastValueQuotes[indexLastValue].ultimoPrecio - 1 + 1,
+                cashFlows[i],
+                daysDiff,
+                numberOfPayments
+            )
+            /* const cashFlow = new Array(daysDiff);
             for (let j = 0; j < cashFlow.length; j++) {
                 cashFlow[j] = 0
-            }
+            } */
 
             // incorpora el monto de intereses en el array del cashflow
-            for (let k = 0; k < cashFlowsData[i].dateInterest.length; k++) {
-                cashFlow[diffInDaysBetweenDateAndToday(new Date(cashFlowsData[i].dateInterest[k]))] = cashFlowsData[i].amountInterest[k]
-            }
+            /* for (let k = 0; k < numberOfPayments; k++) {
+                cashFlow[diffInDaysBetweenDateAndToday(new Date(cashFlows[i].dateOfPayment[k]))] = +cashFlows[i].amountInterest[k] + +cashFlows[i].amountAmortization[k]
+            } */
 
             // incorpora el gasto de inversión al momento cero con la última cotización
-            const lastValueBond = await lastValueService.getInfoByBondName(cashFlowsData[i].bondName);
-            cashFlow.unshift(-(lastValueBond.closePrice - 1 + 1))
 
-            const tiempoTranscurrido = Date.now();
-            const hoy = new Date(tiempoTranscurrido);
 
             // calculate tir and persist result in DB
             let tirDaily = irr(cashFlow)
             let tirAnnual = Math.pow(1 + tirDaily, 365)
-            tirAnnualRound = roundToTwo(((tirAnnual) - 1))
-            const index = tirData.findIndex((e) => e.bondName == lastValueBond.bondName)
-            if (index >= 0) {
-                tirRepository.modifyData(lastValueBond.bondName, hoy.toLocaleDateString(), hoy.toLocaleTimeString(), tirAnnualRound)
-            } else {
-                tirRepository.subirInfo(
-                    new TirModel(
-                        cashFlowsData[i].bondName,
-                        "data",
-                        "time",
-                        tirAnnualRound
-                    )
-                ) 
-            }       
+            let tirAnnualRound = roundToTwo(((tirAnnual) - 1))
+            tirDailyArray.push({
+                ticket: cashFlows[i].ticket,
+                tirDaily: tirDaily,
+                tirAnnual: tirAnnual,
+                tirAnnualRound: tirAnnualRound
+            })
         }
-        return {"message": "ok"}
+        return tirDailyArray
 
     }
 
@@ -121,6 +121,18 @@ class TirService {
         }
         arrayOfPayments.unshift(-lastPrice)
         return arrayOfPayments
+    }
+
+    #generateDailyConsolidedCashflow(lastPrice, cashFlowsData, length, numberOfPayments) {
+        const cashFlow = new Array(length);
+        for (let j = 0; j < cashFlow.length; j++) {
+            cashFlow[j] = 0
+        }
+        for (let k = 0; k < numberOfPayments; k++) {
+            cashFlow[diffInDaysBetweenDateAndToday(new Date(cashFlowsData.dateOfPayment[k]))] = +cashFlowsData.amountInterest[k] + +cashFlowsData.amountAmortization[k]
+        }
+        cashFlow.unshift(-lastPrice)
+        return cashFlow
     }
 }
 
