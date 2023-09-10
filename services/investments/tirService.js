@@ -57,12 +57,6 @@ class TirService {
         const cashFlowsData = await cashFlowRepository.leerInfo()
         const cashFlows = cashFlowsData.filter(it => assets.includes(it.ticket))
         const lastValueQuotes = await lastValueService.getData()
-        // const tirData = await tirRepository.leerInfo()
-        // let tirAnnualRound = 0;
-
-        // ESTO SOLO SERÍA NECESARIO SI QUISIERA ACTUALIZAR LA TIR DE UN BONO EN PARTICULAR
-        // obtiene el indice del bono que se quiere calcular la tir
-        // const bondIndex = cashFlowsData.findIndex((bond) => bond.bondName == bondName)
 
         const tirDailyArray = new Array
         for (let i = 0; i < cashFlows.length; i++) {
@@ -91,7 +85,6 @@ class TirService {
             })
         }
         return tirDailyArray
-
     }
 
     async getTirDaily() {
