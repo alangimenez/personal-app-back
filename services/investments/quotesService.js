@@ -63,15 +63,11 @@ class QuotesService {
         const onQuotes = await iolApiClient.getOnQuotes(token)
         const adrQuotes = await iolApiClient.getAdrQuotes(token)
         const publicBondsQuotes = await iolApiClient.getPublicBondsQuotes(token)
-        const onQuotesFiltered = this.#getAssetsFiltered(onQuotes.titulos, listOfUploadedBonds)
-        const adrQuotesFiltered = this.#getAssetsFiltered(adrQuotes.titulos, listOfUploadedBonds)
-        const publicBondsQuotesFiltered = this.#getAssetsFiltered(publicBondsQuotes.titulos, listOfUploadedBonds)
+        const onQuotesTransformed = this.#transformQuotes(onQuotes.titulos, listOfUploadedBonds, "ON")
+        const adrQuotesTransformed = this.#transformQuotes(adrQuotes.titulos, listOfUploadedBonds, "ADR")
+        const publicBondsQuotesTransformed = this.#transformQuotes(publicBondsQuotes.titulos, listOfUploadedBonds, "Bono Público")
 
-        const allQuotes = {
-            obligacionesNegociables: onQuotesFiltered,
-            adr: adrQuotesFiltered,
-            publicBonds: publicBondsQuotesFiltered
-        }
+        const allQuotes = [...onQuotesTransformed, ...adrQuotesTransformed, ...publicBondsQuotesTransformed]
         const quotes = new QuotesModel(getActualDayInZero(), allQuotes)
         await quotesRepository.subirInfo(quotes)
 
@@ -86,8 +82,26 @@ class QuotesService {
         return listOfUploadedBonds
     }
 
+    #transformQuotes(assets, listOfFilter, type) {
+        const filteredAssets = this.#getAssetsFiltered(assets, listOfFilter)
+        const assetsWithType = this.#addTypeInvestment(filteredAssets, type)
+        return assetsWithType
+    }
+
     #getAssetsFiltered(assets, listOfFilter) {
         return assets.filter(it => listOfFilter.includes(it.simbolo))
+    }
+
+    #addTypeInvestment(assets, type) {
+        const assetsWithType = []
+        assets.forEach(asset => {
+            const assetWithType = {
+                ...asset,
+                type: type
+            }
+            assetsWithType.push(assetWithType)
+        })
+        return assetsWithType
     }
 }
 
