@@ -20,9 +20,9 @@ class OtherQuotesService {
         const bitcoinQuote = await coinGeckoApiClient.getBitcoinQuoteByDate(dateForCriptoFetch)
 
         const quotes = new OtherQuotesModel(
-            dollarData.oficial,
-            dollarData.oficial - 12,
-            dollarData.mep,
+            dollarData.oficial.price,
+            dollarData.oficial.price - (dollarData.oficial.price * 0.045),
+            dollarData.mep.al30["48hs"].price,
             ethereumQuote,
             litecoinQuote,
             bitcoinQuote
