@@ -20,6 +20,12 @@ class CoinGeckoApiClient {
         const bitcointData = await bitcoinResponse.json()
         return bitcointData.market_data.current_price.usd
     }
+
+    async getActualPriceCriptos() {
+        const response = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,litecoin&vs_currencies=usd`)
+        const data = await response.json()
+        return data
+    }
 }
 
 const coinGeckoApiClient = new CoinGeckoApiClient()

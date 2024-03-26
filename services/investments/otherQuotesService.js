@@ -37,12 +37,32 @@ class OtherQuotesService {
 
     async getLastQuote() {
         const lastQuote = await otherQuotesDao.getLastQuote()
-        // const date = new Date(lastQuote[0].date)
+
         return ({
             ...lastQuote[0]._doc,
             "proxDate": addDays(lastQuote[0].date),
             "date": moment(lastQuote[0].date).add(12, 'hours').format('YYYY-MM-DD')
         })
+    }
+
+    async getCriptoQuotes() {
+        const quotesLastDay = await otherQuotesDao.getLastQuote()
+        console.log(quotesLastDay)
+        const actualPrices = await coinGeckoApiClient.getActualPriceCriptos()
+        return {
+            bitcoin: {
+                actual: actualPrices.bitcoin.usd,
+                lastDay: quotesLastDay[0].quotes.bitcoin
+            },
+            ethereum: {
+                actual: actualPrices.ethereum.usd,
+                lastDay: quotesLastDay[0].quotes.ethereum
+            },
+            litecoin: {
+                actual: actualPrices.litecoin.usd,
+                lastDay: quotesLastDay[0].quotes.litecoin
+            }
+        }
     }
 }
 
