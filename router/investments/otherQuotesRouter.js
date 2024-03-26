@@ -12,9 +12,4 @@ router.post('/', async (req, res) => {
     res.status(201).json(result)
 })
 
-router.get('/cripto', async (req, res) => {
-    const response = await otherQuotesService.getCriptoQuotes()
-    res.json(response).status(200)
-})
-
 module.exports = router
