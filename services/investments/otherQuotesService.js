@@ -47,7 +47,6 @@ class OtherQuotesService {
 
     async getCriptoQuotes() {
         const quotesLastDay = await otherQuotesDao.getLastQuote()
-        console.log(quotesLastDay)
         const actualPrices = await coinGeckoApiClient.getActualPriceCriptos()
         return {
             bitcoin: {
