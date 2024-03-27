@@ -72,16 +72,10 @@ class LastValueService {
     async getAll() {
         let lastValues = await lastValueRepository.leerInfo()
 
-        let response = []
-        for (let i = 0; i < lastValues.length; i++) {
-            response.push({
-                ticket: lastValues[i].ticket,
-                date: lastValues[i].date,
-                price: +lastValues[i].price,
-                volume: +lastValues[i].volume
-            })
-        }
-        return response
+        const usdMep = lastValues[0].otherQuotes.quotes.dolarMep
+        let bondQuotes = this.#convertBondModelToBondResponse(lastValues[0].quotes, usdMep)
+        
+        return bondQuotes
     }
 
     async getQuotesWithTir() {
@@ -134,6 +128,26 @@ class LastValueService {
             otherQuotes: otherQuotes
         })
         return
+    }
+
+    #getLastPriceInUsd(price, currency, usd) {
+        if (currency == "US$" || currency == "2") {
+            return price
+        } else {
+            return price / usd
+        }
+    }
+
+    #convertBondModelToBondResponse(bondModelList, usd) {
+        const bondResponseList = []
+        for (let i = 0; i < bondModelList.length; i++) {
+            const bond = bondModelList[i]
+            bondResponseList.push({
+                ticket: bond.simbolo,
+                price: this.#getLastPriceInUsd(bond.ultimoPrecio, bond.moneda, usd)
+            })
+        }
+        return bondResponseList
     }
 }
 
