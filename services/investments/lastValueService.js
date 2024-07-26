@@ -2,6 +2,7 @@ const lastValueRepository = require('../../repository/daos/investments/lastValue
 const tirRepository = require('../../repository/daos/investments/tirDao');
 const otherQuotesService = require('./otherQuotesService.js')
 const quotesService = require('./quotesService.js')
+const logService = require('../logs/logService.js')
 const Quote = require('../../models/quote');
 const { convertRequest } = require('../../utils/utils')
 const moment = require('moment'); // require
@@ -127,6 +128,9 @@ class LastValueService {
             quotes: quotes,
             otherQuotes: otherQuotes
         })
+
+        logService.createNewMessage("El relevamiento diario de cotizaciones finalizó con éxito a las : " + new Date())
+
         return
     }
 
