@@ -67,13 +67,14 @@ class QuotesService {
         const adrQuotes = await iolApiClient.getAdrQuotes(token)
         const publicBondsQuotes = await iolApiClient.getPublicBondsQuotes(token)
         const stocksArgentinaQuotes = await iolApiClient.getStocksArgentinaQuotes(token)
+        const vistaEeuuStockQuote = await iolApiClient.getVistaStockEeuuQuotes(token)
 
         const onQuotesTransformed = this.#transformQuotes(onQuotes.titulos, listOfUploadedBonds, "ON")
         const adrQuotesTransformed = this.#transformQuotes(adrQuotes.titulos, listOfUploadedBonds, "ADR")
         const publicBondsQuotesTransformed = this.#transformQuotes(publicBondsQuotes.titulos, listOfUploadedBonds, "Bono Público")
         const stocksTransformed = this.#transformQuotes(stocksArgentinaQuotes.titulos, stocksWithBalance, "Stocks")
 
-        const allQuotes = [...onQuotesTransformed, ...adrQuotesTransformed, ...publicBondsQuotesTransformed, ...stocksTransformed]
+        const allQuotes = [...onQuotesTransformed, ...adrQuotesTransformed, ...publicBondsQuotesTransformed, ...stocksTransformed, vistaEeuuStockQuote]
         const quotes = new QuotesModel(getActualDayInZero(), allQuotes)
 
         try {
