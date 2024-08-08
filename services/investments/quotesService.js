@@ -4,7 +4,9 @@ const Quote = require('../../models/quote');
 const QuotesModel = require('../../models/model/quotesModel')
 const iolApiClient = require('../../clients/iolApiClient')
 const { getActualDayInZero } = require('../../utils/utils')
-const cashflowRepository = require('../../repository/daos/investments/cashflowDao')
+const cashflowRepository = require('../../repository/daos/investments/cashflowDao');
+const accountService = require('../accounts/accountService');
+const logService = require('../logs/logService.js')
 
 class QuotesService {
     constructor() { }
@@ -59,17 +61,26 @@ class QuotesService {
         const token = await userService.getAccessTokenToOperateIol()
         const uploadedBonds = await cashflowRepository.leerInfo()
         const listOfUploadedBonds = this.#getListOfUploadedBonds(uploadedBonds)
+        const stocksWithBalance = await accountService.getTicketsByAssetTypeWithBalanceGreatherThanZero("Stocks")
 
         const onQuotes = await iolApiClient.getOnQuotes(token)
         const adrQuotes = await iolApiClient.getAdrQuotes(token)
         const publicBondsQuotes = await iolApiClient.getPublicBondsQuotes(token)
+        const stocksArgentinaQuotes = await iolApiClient.getStocksArgentinaQuotes(token)
+
         const onQuotesTransformed = this.#transformQuotes(onQuotes.titulos, listOfUploadedBonds, "ON")
         const adrQuotesTransformed = this.#transformQuotes(adrQuotes.titulos, listOfUploadedBonds, "ADR")
         const publicBondsQuotesTransformed = this.#transformQuotes(publicBondsQuotes.titulos, listOfUploadedBonds, "Bono Público")
+        const stocksTransformed = this.#transformQuotes(stocksArgentinaQuotes.titulos, stocksWithBalance, "Stocks")
 
-        const allQuotes = [...onQuotesTransformed, ...adrQuotesTransformed, ...publicBondsQuotesTransformed]
+        const allQuotes = [...onQuotesTransformed, ...adrQuotesTransformed, ...publicBondsQuotesTransformed, ...stocksTransformed]
         const quotes = new QuotesModel(getActualDayInZero(), allQuotes)
-        await quotesRepository.subirInfo(quotes)
+
+        try {
+            await quotesRepository.subirInfo(quotes)
+        } catch (error) {
+            logService.createNewMessage("Hubo un error guardando las cotizaciones en Quotes. QuotesService/saveInfoFromIol")
+        }
 
         return allQuotes
     }
