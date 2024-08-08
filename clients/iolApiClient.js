@@ -35,6 +35,36 @@ class IolApiClient{
         return await quotesResponse.json() 
     }
 
+    async getStocksArgentinaQuotes(token) {
+        const requestOptions = {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }
+        }
+        const quotesResponse = await fetch(`https://api.invertironline.com/api/v2/Cotizaciones/Acciones/Argentina/Todos`, requestOptions)
+        await this.#incrementCounter()
+        return await quotesResponse.json() 
+    }
+
+    async getCedearQuotes(token) {
+        const requestOptions = {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }
+        }
+        const quotesResponse = await fetch(`https://api.invertironline.com/api/v2/Cotizaciones/Acciones/estados_Unidos/Todos?cotizacionInstrumentoModel.instrumento=cedears&cotizacionInstrumentoModel.pais=argentina`, requestOptions)
+        await this.#incrementCounter()
+        return await quotesResponse.json() 
+    }
+
+    async getVistaStockEeuuQuotes(token) {
+        const requestOptions = {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }
+        }
+        const quotesResponse = await fetch(`https://api.invertironline.com/api/v2/nYSE/Titulos/VIST/CotizacionDetalle`, requestOptions)
+        await this.#incrementCounter()
+        return await quotesResponse.json() 
+    }
+
     async getRefreshTokenFromIol(refreshToken) {
         const tokenResponse = await fetch(
             `https://api.invertironline.com/token`,

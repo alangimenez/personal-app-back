@@ -66,6 +66,19 @@ class AccountService {
     async getAccountsByType(type) {
         return await accountRepository.getAccountsByType(type)
     }
+
+    async getTicketsByAssetTypeWithBalanceGreatherThanZero(assetType) {
+        const accounts = await accountRepository.getAccountsByAssetType(assetType)
+        const accountsWithBalanceGreathenThanZero = []
+
+        accounts.map(account => {
+            if (account.balance > 0) {
+                accountsWithBalanceGreathenThanZero.push(account.ticket)
+            }
+        })
+        
+        return accountsWithBalanceGreathenThanZero
+    }
 }
 
 const accountService = new AccountService()
