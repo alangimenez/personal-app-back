@@ -62,19 +62,22 @@ class QuotesService {
         const uploadedBonds = await cashflowRepository.leerInfo()
         const listOfUploadedBonds = this.#getListOfUploadedBonds(uploadedBonds)
         const stocksWithBalance = await accountService.getTicketsByAssetTypeWithBalanceGreatherThanZero("Stocks")
+        const cedearsWithBalance = await await accountService.getTicketsByAssetTypeWithBalanceGreatherThanZero("CEDEAR")
 
         const onQuotes = await iolApiClient.getOnQuotes(token)
         const adrQuotes = await iolApiClient.getAdrQuotes(token)
         const publicBondsQuotes = await iolApiClient.getPublicBondsQuotes(token)
         const stocksArgentinaQuotes = await iolApiClient.getStocksArgentinaQuotes(token)
         const vistaEeuuStockQuote = await iolApiClient.getVistaStockEeuuQuotes(token)
+        const cedearsQuotes = await iolApiClient.getCedearQuotes(token)
 
         const onQuotesTransformed = this.#transformQuotes(onQuotes.titulos, listOfUploadedBonds, "ON")
         const adrQuotesTransformed = this.#transformQuotes(adrQuotes.titulos, listOfUploadedBonds, "ADR")
         const publicBondsQuotesTransformed = this.#transformQuotes(publicBondsQuotes.titulos, listOfUploadedBonds, "Bono Público")
         const stocksTransformed = this.#transformQuotes(stocksArgentinaQuotes.titulos, stocksWithBalance, "Stocks")
+        const cedearTransformed = this.#transformQuotes(cedearsQuotes.titulos, cedearsWithBalance, "CEDEAR")
 
-        const allQuotes = [...onQuotesTransformed, ...adrQuotesTransformed, ...publicBondsQuotesTransformed, ...stocksTransformed, vistaEeuuStockQuote]
+        const allQuotes = [...onQuotesTransformed, ...adrQuotesTransformed, ...publicBondsQuotesTransformed, ...stocksTransformed, vistaEeuuStockQuote, ...cedearTransformed]
         const quotes = new QuotesModel(getActualDayInZero(), allQuotes)
 
         try {
