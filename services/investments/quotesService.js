@@ -71,6 +71,8 @@ class QuotesService {
         const vistaEeuuStockQuote = await iolApiClient.getVistaStockEeuuQuotes(token)
         const cedearsQuotes = await iolApiClient.getCedearQuotes(token)
 
+        vistaEeuuStockQuote.type = "StocksEeuu"
+
         const onQuotesTransformed = this.#transformQuotes(onQuotes.titulos, listOfUploadedBonds, "ON")
         const adrQuotesTransformed = this.#transformQuotes(adrQuotes.titulos, listOfUploadedBonds, "ADR")
         const publicBondsQuotesTransformed = this.#transformQuotes(publicBondsQuotes.titulos, listOfUploadedBonds, "Bono Público")
